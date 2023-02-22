@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import pickle
+from nltk.corpus import stopwords
 
 def parse_raw(file):
 	arr = []
@@ -50,7 +51,7 @@ def data_stats(arr):
 	median_len = compute_median(prompt_len)
 	median_words = compute_median(prompt_words)
 	
-	return round(avg_len/len(arr)), round(avg_words/len(arr)), word_freq_tuple, median_len, median_words
+	return round(avg_len/len(arr)), round(avg_words/len(arr)), word_freq_tuple, median_len, median_words, word_freq
 
 def compute_median(arr):
 	if len(arr) % 2 == 0:
@@ -58,45 +59,79 @@ def compute_median(arr):
 	else:
 		return arr[len(arr)//2]
 
-def clean_data(arr, avg_len, avg_words, median_len, median_words):
-
+def clean_data(arr, avg_len, avg_words, median_len, median_words, word_freq):
 	for line, link in arr:
+		
 		too_short = len(line) < avg_len/2
 		too_long = len(line) > avg_len + avg_len/2
 		too_few_words = len(line.split()) < avg_words/2
 		too_many_words = len(line.split()) > avg_words + avg_words/2
-		contains_brackets = '{' in line or '}' in line or '[' in line or ']' or '(' in line or ')' in line
+		contains_brackets = ('{' in line or '}' in line or '[' in line or ']' in line or '(' in line or ')' in line)
 
+		
 		if too_short or too_long or too_few_words or too_many_words or contains_brackets:
 			arr.remove([line, link])
-			
+			continue
+
+		# TODO: revisit whether we want to remove prompts with words that appear less than 2 times
+		sentence = line.split()
+		for word in sentence: 
+			if word_freq[word] < 2:
+				arr.remove([line, link])
+				break
+
 	return arr
+
+def addHints(df):
+	# loop through dataframe and select two words randomly from each prompt to be the hint words
+	# use the nltk stopwords list to remove common words
+	stop_words = set(stopwords.words('english'))
+	for i in range(len(df)):
+		prompt = df.iloc[i, 0]
+		prompt = prompt.split()
+		hint_words = []
+		for word in prompt:
+			if word not in stop_words:
+				hint_words.append(word)
+		if len(hint_words) > 2:
+			hint_words = np.random.choice(hint_words, size=2, replace=False)
+		# add hint words to dataframe as a new column
+		df.at[i, 'hint_words'] = hint_words
+
 	
 def main():
 	# parse the raw data
 	arr = parse_raw('data/lexica_raw.txt')
 
 	# compute the statistics of the data
-	avg_len, avg_words, word_freq, median_len, median_words = data_stats(arr)
+	avg_len, avg_words, word_freq_tuple, median_len, median_words, word_freq = data_stats(arr)
 	print("number of prompts: ", len(arr))
 	print("average length of prompts: ", avg_len)
 	print("average number of words: ", avg_words)
 	print("median length of prompts: ", median_len)
 	print("median number of words: ", median_words)
+	print("most frequent words: ", word_freq_tuple[:10])
+	print("least frequent words: ", word_freq_tuple[-10:])
 	
 	# clean the data
-	clean_arr = clean_data(arr, avg_len, avg_words, median_len, median_words)
+	clean_arr = clean_data(arr, avg_len, avg_words, median_len, median_words, word_freq)
 	print("number of prompts after cleaning: ", len(clean_arr))
 
-	# write the cleaned data to a file as a dataframe
+	# convert all prompts to lowercase
+	clean_arr = [[prompt.lower(), link] for prompt, link in clean_arr]
+
+	# convert to dataframe
 	df = pd.DataFrame(clean_arr, columns=['prompt', 'link'])
+
+	# add column "hint words" to dataframe
+	addHints(df)
 
 	# write the dataframe to pickle
 	df.to_pickle('data/lexica_clean.pkl')
 
 	# read the dataframe from pickle
 	df = pd.read_pickle('data/lexica_clean.pkl')
-	print(df.head())
+	print(df[:])
 
 
 main()
