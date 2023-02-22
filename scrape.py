@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver import ActionChains
 import time
 import csv
 
@@ -12,19 +13,21 @@ try:
 
 	time.sleep(2)
 
-	# scroll to bottom of page
-	driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-	# execute JS to get all divs with role=gridcell
-	elements = driver.execute_script("return document.querySelectorAll('[role=gridcell]')")
-
 	# get all links
 	links = []
-	for elem in elements:
-		url = elem.find_element(By.TAG_NAME, 'a').get_attribute('href')
-		links.append(url)
+
+	# scroll to bottom of page
+	for i in range(10):
+		driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+		time.sleep(2)
+		# execute JS to get all divs with role=gridcell
+		elements = driver.execute_script("return document.querySelectorAll('[role=gridcell]')")
+		for elem in elements:
+			url = elem.find_element(By.TAG_NAME, 'a').get_attribute('href')
+			links.append(url)
 	
-	with open('lexica.txt', 'w') as f:
+	
+	with open('lexica_raw.txt', 'w') as f:
 		for link in links:
 			driver.get(link)
 			time.sleep(1)
@@ -55,4 +58,5 @@ try:
 except Exception as e:
 	print(e)
 finally: 
+	f.close()
 	driver.close()
