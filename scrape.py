@@ -27,7 +27,7 @@ try:
 			links.append(url)
 	
 	
-	with open('lexica_raw.txt', 'w') as f:
+	with open('data/lexica_raw.txt', 'w') as f:
 		for link in links:
 			driver.get(link)
 			time.sleep(1)
