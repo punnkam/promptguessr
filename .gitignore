@@ -2,3 +2,7 @@ venv/
 lexica_raw.txt
 geckodriver.log
 data/
+__pycache__/
+.env
+firebase_config.json
+prompt-guessr-firebase-adminsdk-6dg4j-98f3b24207.json
