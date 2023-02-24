@@ -3,13 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type { Prompt, Error } from './types';
 
 import { initializeApp } from 'firebase/app';
-import {
-    getDoc,
-    getFirestore,
-    doc,
-    getCountFromServer,
-    collection,
-} from 'firebase/firestore';
+import { getDoc, getFirestore, doc } from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,

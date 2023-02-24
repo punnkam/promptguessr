@@ -5,6 +5,8 @@ import { Configuration, OpenAIApi } from 'openai';
 import { initializeApp } from 'firebase/app';
 import { getDoc, getFirestore, doc } from 'firebase/firestore';
 
+// TODO: Implement rate limiting
+
 // Initialize Firebase and Firestore
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -64,10 +66,13 @@ export default async function handler(
                 promptVector
             );
 
+            // If similarity is greater than 0.9, update the leaderboard
+
             res.send({
                 pid: pid as string,
                 prompt: prompt.data().prompt,
                 similarity,
+                won: similarity > 0.9,
             });
         } else {
             res.status(404).json({ message: `Prompt ${pid} not found` });

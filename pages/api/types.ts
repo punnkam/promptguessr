@@ -9,6 +9,7 @@ export type SubmitResponse = {
     pid: string;
     prompt?: string;
     similarity: number;
+    won: boolean;
 };
 
 export type Error = {
