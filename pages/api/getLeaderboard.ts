@@ -23,35 +23,5 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<Prompt | Error>
 ) {
-    try {
-        // TODO: Change to 1000 or something
-        const promptCount: number = 950;
-
-        // Pick a random prompt from the database
-        const randomPrompt: number = Math.floor(
-            Math.random() * (promptCount + 1)
-        );
-
-        const prompt = await getDoc(
-            doc(db, 'prompts', randomPrompt.toString())
-        );
-
-        // If prompt exists, return it
-        if (prompt.exists()) {
-            const promptResult = prompt.data();
-
-            // Convert document data to Prompt
-            const promptObj: Prompt = {
-                pid: randomPrompt.toString(),
-                image: promptResult.image,
-                length: promptResult.length,
-                hint_words: promptResult.hint_words,
-            };
-            res.status(200).json(promptObj);
-        } else {
-            res.status(400).json({ message: 'No such document!' });
-        }
-    } catch (e: any) {
-        res.status(400).json({ message: e });
-    }
+    return;
 }

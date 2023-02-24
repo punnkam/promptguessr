@@ -5,7 +5,7 @@ import { Configuration, OpenAIApi } from 'openai';
 import { initializeApp } from 'firebase/app';
 import { getDoc, getFirestore, doc } from 'firebase/firestore';
 
-// TODO: Implement rate limiting
+import applyRateLimit from '../../utils/rateLimiter'; // https://kittygiraudel.com/2022/05/16/rate-limit-nextjs-api-routes/
 
 // Initialize Firebase and Firestore
 const firebaseConfig = {
@@ -31,6 +31,13 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<SubmitResponse | Error>
 ) {
+    try {
+        await applyRateLimit(req, res);
+    } catch {
+        res.status(429).json({ message: 'Too many requests!' });
+        return;
+    }
+
     // TODO: possible store existing embeddings in firebase
     try {
         const { pid } = req.query;
