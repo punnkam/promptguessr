@@ -23,6 +23,7 @@
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "firebase": "^9.17.1",
+    "lexica-api": "^1.0.2",
     "lucide": "^0.115.0",
     "lucide-react": "^0.115.0",
     "next": "^13.1.6",

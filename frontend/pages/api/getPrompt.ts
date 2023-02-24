@@ -30,9 +30,8 @@ export default async function handler(
     res: NextApiResponse<Prompt | Error>
 ) {
     try {
-        const promptCount: number = (
-            await getCountFromServer(collection(db, 'prompts'))
-        ).data().count;
+        // TODO: Change to 1000 or something
+        const promptCount: number = 950;
 
         // Pick a random prompt from the database
         const randomPrompt: number = Math.floor(
