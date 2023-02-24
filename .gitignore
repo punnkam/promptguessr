@@ -35,3 +35,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#scraping
+
+scraping/venv/
+scraping/geckodriver.log
+scraping/data/
