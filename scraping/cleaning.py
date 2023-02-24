@@ -119,12 +119,20 @@ def process_df(df):
 
 	
 def main():
-	# parse the raw data
-	arr = parse_raw('scraping/data/lexica_raw.txt')
+	# parse the raw data 
+	big_arr = []
+	for i in range(10):
+		arr = parse_raw(f'scraping/data/lexica_raw_{i}.txt')
+		big_arr = big_arr + arr
+	
+	# remove prompts that are not in the format "prompt | link"
+	for prompt in big_arr:
+		if len(prompt) != 2:
+			big_arr.remove(prompt)
 
 	# compute the statistics of the data
-	avg_len, avg_words, word_freq_tuple, median_len, median_words, word_freq = data_stats(arr)
-	print("number of prompts: ", len(arr))
+	avg_len, avg_words, word_freq_tuple, median_len, median_words, word_freq = data_stats(big_arr)
+	print("number of prompts: ", len(big_arr))
 	print("average length of prompts: ", avg_len)
 	print("average number of words: ", avg_words)
 	print("median length of prompts: ", median_len)
@@ -133,8 +141,7 @@ def main():
 	print("least frequent words: ", word_freq_tuple[-10:])
 	
 	# clean the data
-	clean_arr = clean_data(arr, avg_len, avg_words, median_len, median_words, word_freq)
-	print("number of prompts after cleaning: ", len(clean_arr))
+	clean_arr = clean_data(big_arr, avg_len, avg_words, median_len, median_words, word_freq)
 
 	# convert all prompts to lowercase
 	clean_arr = [[prompt.lower(), link] for prompt, link in clean_arr]
@@ -143,6 +150,7 @@ def main():
 	df = pd.DataFrame(clean_arr, columns=['prompt', 'link'])
 
 	df = process_df(df)
+	print("number of prompts after cleaning: ", len(df))
 
 	# write the dataframe to pickle
 	df.to_pickle('scraping/data/lexica_clean.pkl')
