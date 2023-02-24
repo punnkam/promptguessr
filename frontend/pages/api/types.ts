@@ -1,11 +1,23 @@
 export type Prompt = {
     pid: string;
-    prompt: string;
     image: string;
     length: number;
     hint_words: string[];
 };
 
+export type SubmitResponse = {
+    pid: string;
+    prompt?: string;
+    similarity: number;
+};
+
 export type Error = {
     message: string;
+};
+
+export type User = {
+    uid: string;
+    name: string;
+    email: string;
+    solved: Prompt[];
 };

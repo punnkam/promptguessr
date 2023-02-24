@@ -9,7 +9,7 @@ const lexica = new LexicaAPI();
 // Get a random prompt from the firebase store
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Image | Error>
+    res: NextApiResponse<Image[] | Error>
 ) {
     try {
         // get the search query
@@ -21,7 +21,7 @@ export default async function handler(
         }
 
         // send result
-        res.status(200).json(results.images[0]);
+        res.status(200).json(results.images);
     } catch (e: any) {
         res.status(400).json({ message: e });
     }

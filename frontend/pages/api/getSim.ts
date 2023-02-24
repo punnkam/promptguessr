@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import type { Prompt, Error } from './types';
+import type { SubmitResponse, Error } from './types';
 import { Configuration, OpenAIApi } from 'openai';
 import { initializeApp } from 'firebase/app';
 import { getDoc, getFirestore, doc } from 'firebase/firestore';
@@ -27,17 +27,12 @@ const openai = new OpenAIApi(configuration);
 // Get similarity score between prompt and guess
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Prompt | Error>
+    res: NextApiResponse<SubmitResponse | Error>
 ) {
+    // TODO: possible store existing embeddings in firebase
     try {
         const { pid } = req.query;
         const { guess } = req.body;
-        const completion = await openai.createEmbedding({
-            model: 'text-embedding-ada-002',
-            input: guess,
-        });
-        console.log(completion.data.data[0].embedding);
-        //TODO finish this
 
         if (!pid) {
             res.status(400).json({ message: 'No prompt id provided' });
@@ -52,10 +47,46 @@ export default async function handler(
         const prompt = await getDoc(doc(db, 'prompts', pid as string));
         if (prompt.exists()) {
             // Call OpenAI API to get similarity score
+            const guessEmbedding = await openai.createEmbedding({
+                model: 'text-embedding-ada-002',
+                input: guess,
+            });
+            const guessVector = guessEmbedding.data.data[0].embedding;
+
+            const promptEmbedding = await openai.createEmbedding({
+                model: 'text-embedding-ada-002',
+                input: prompt.data().prompt,
+            });
+            const promptVector = promptEmbedding.data.data[0].embedding;
+
+            const similarity = calculateCosineSimilarity(
+                guessVector,
+                promptVector
+            );
+
+            res.send({
+                pid: pid as string,
+                prompt: prompt.data().prompt,
+                similarity,
+            });
         } else {
             res.status(404).json({ message: `Prompt ${pid} not found` });
         }
     } catch (e: any) {
         res.status(500).json({ message: e.message });
     }
+}
+
+function calculateCosineSimilarity(vectorA: number[], vectorB: number[]) {
+    let dotProduct = 0;
+    let magnitudeA = 0;
+    let magnitudeB = 0;
+
+    for (let i = 0; i < vectorA.length; i++) {
+        dotProduct += vectorA[i] * vectorB[i];
+        magnitudeA += vectorA[i] * vectorA[i];
+        magnitudeB += vectorB[i] * vectorB[i];
+    }
+
+    return dotProduct / Math.sqrt(magnitudeA * magnitudeB);
 }

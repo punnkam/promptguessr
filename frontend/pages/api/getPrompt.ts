@@ -49,7 +49,6 @@ export default async function handler(
             // Convert document data to Prompt
             const promptObj: Prompt = {
                 pid: randomPrompt.toString(),
-                prompt: promptResult.prompt,
                 image: promptResult.image,
                 length: promptResult.length,
                 hint_words: promptResult.hint_words,
