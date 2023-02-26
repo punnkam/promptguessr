@@ -19,15 +19,13 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class', '[data-theme="dark"]'],
-  content: [
-    'app/**/*.{ts,tsx}',
-    'components/**/*.{ts,tsx}',
-    ,
-  ],
+  content: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', ,],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', ...fontFamily.sans],
+        // sans: ['var(--font-sans)', ...fontFamily.sans],
+        // here we add the font for JetBrains_Mono
+        mono: ['JetBrains Mono', ...fontFamily.mono],
       },
       keyframes: {
         'accordion-down': {
@@ -43,9 +41,14 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      colors: {
+        bg: '#F7F7F7',
+      },
     },
   },
-  plugins: [
-    require('tailwindcss-animate', '@tailwindcss/typography'),
+  plugins: [require('tailwindcss-animate', '@tailwindcss/typography')],
+  css: [
+    // ...
+    './styles/globals.css',
   ],
 };
