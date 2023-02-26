@@ -7,7 +7,7 @@ import Rankings from '@/components/ui/rankings';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import type { Prompt } from '../../pages/api/types';
+import type { Prompt, SubmitResponse } from '../../pages/api/types';
 
 import Spinner from '@/components/ui/spinner';
 
@@ -39,18 +39,32 @@ const mono = JetBrains_Mono({
 
 export default function Home() {
     const [open, setOpen] = React.useState(false);
-    const [tags, setTags] = useState<string[]>([]);
+    const [scores, setScores] = useState<number[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [prompt, setPrompt] = useState<Prompt | undefined>(undefined);
+    const [result, setResult] = useState<SubmitResponse | undefined>(undefined);
     const [shortcutPressed, setShortcutPressed] = useState(false);
-
-    const handleRemoveTag = (tag: string) => {
-        setTags(tags.filter((t) => t !== tag));
-    };
 
     const getPrompt = async () => {
         const prompt = await axios.get('/api/getPrompt');
         return prompt;
+    };
+
+    const submitPrompt = () => {
+        // add error handling
+        if (inputValue === '') return;
+        if (prompt === undefined) return;
+        axios
+            .post(`/api/getSim?pid=${prompt.pid}`, {
+                guess: inputValue,
+            })
+            .then((res) => {
+                setResult(res.data);
+                setScores(scores.concat(res.data.similarity));
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
@@ -68,7 +82,7 @@ export default function Home() {
             <div className='flex items-center justify-center w-1/2 '>
                 <Command className='z-50 justify-center w-full p-4 m-4 bg-white border rounded-lg shadow-md outline-none h-2/5 border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
                     <CommandInput
-                        placeholder='Type the prompt and press enter to add tags!'
+                        placeholder='Type the prompt and press enter and get your scores!'
                         className={mono.className}
                         value={inputValue}
                         onInput={(event) =>
@@ -76,55 +90,31 @@ export default function Home() {
                                 (event.target as HTMLInputElement).value
                             )
                         }
-                        onEnter={(value) => {
-                            setTags([...tags, value]);
-                            setInputValue('');
-                        }}
+                        onEnter={submitPrompt}
                     />
                     <CommandList>
                         <CommandEmpty>No results found.</CommandEmpty>
                         <div className='relative flex cursor-default select-none items-center rounded-md py-1.5 px-2 text-sm font-medium outline-none aria-selected:bg-slate-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-slate-700'>
-                            <p className='mx-2 text-gray-500'>Tags:</p>
-                            {tags.map((tag, index) => (
-                                <div
-                                    key={index}
-                                    className='inline-flex items-center px-2 py-1 mr-2 text-sm font-medium text-indigo-800 bg-indigo-100 rounded dark:bg-indigo-900 dark:text-indigo-300'
-                                >
-                                    {tag}
-
-                                    <button
-                                        type='button'
-                                        className='inline-flex items-center p-0.5 ml-2 text-sm text-indigo-400 bg-transparent rounded-sm hover:bg-indigo-200 hover:text-indigo-900 dark:hover:bg-indigo-800 dark:hover:text-indigo-300 '
-                                        data-dismiss-target='#badge-dismiss-indigo'
-                                        onClick={() => {
-                                            const newTags = [...tags];
-                                            newTags.splice(index, 1);
-                                            setTags(newTags);
-                                        }}
-                                        aria-label='Remove'
+                            <p className='mx-2 text-gray-500'>Scores:</p>
+                            {scores.map((score, index) =>
+                                score < 0.9 ? (
+                                    <div
+                                        key={index}
+                                        className='inline-flex items-center px-2 py-1 mr-2 text-sm font-medium text-indigo-800 bg-indigo-100 rounded dark:bg-indigo-900 dark:text-indigo-300'
                                     >
-                                        <svg
-                                            aria-hidden='true'
-                                            className='w-3.5 h-3.5'
-                                            // aria-hidden="true"
-                                            fill='currentColor'
-                                            viewBox='0 0 20 20'
-                                            xmlns='http://www.w3.org/2000/svg'
-                                        >
-                                            <path
-                                                fillRule='evenodd'
-                                                d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-                                                clipRule='evenodd'
-                                            ></path>
-                                        </svg>
-                                        <span className='sr-only'>
-                                            Remove badge
-                                        </span>
-                                    </button>
-                                </div>
-                            ))}
+                                        {score}
+                                    </div>
+                                ) : (
+                                    <div
+                                        key={index}
+                                        className='inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-green-100 rounded green-indigo-800 dark:bg-green-900 dark:green-indigo-300'
+                                    >
+                                        {score}
+                                    </div>
+                                )
+                            )}
                         </div>
-                        {/* <CommandItem>Remove all tags</CommandItem> */}
+                        {/* <CommandItem>Remove all scores</CommandItem> */}
                         <CommandGroup heading='Suggestions'>
                             <CommandItem>
                                 {/* <Calendar className="w-4 h-4 mr-2" /> */}
@@ -147,6 +137,7 @@ export default function Home() {
                         <Button
                             variant='default'
                             className='text-white bg-green-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex w-20 '
+                            onClick={submitPrompt}
                         >
                             <p className='font-semibold text-white'>Submit</p>
                         </Button>
@@ -199,6 +190,8 @@ export default function Home() {
                             className='text-white bg-sky-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex w-24	'
                             onClick={() => {
                                 setPrompt(undefined);
+                                setInputValue('');
+                                setScores([]);
                                 getPrompt()
                                     .then((res) => {
                                         setPrompt(res.data);

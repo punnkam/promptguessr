@@ -78,7 +78,7 @@ export default async function handler(
             res.send({
                 pid: pid as string,
                 prompt: prompt.data().prompt,
-                similarity,
+                similarity: Math.round(similarity * 100) / 100,
                 won: similarity > 0.9,
             });
         } else {
