@@ -26,9 +26,8 @@ export const getRateLimitMiddlewares = ({
     rateLimit({ keyGenerator: getIP, windowMs, max: limit }),
 ];
 
-const middlewares = getRateLimitMiddlewares();
-
-async function applyRateLimit(request: any, response: any) {
+async function applyRateLimit(request: any, response: any, limit: number = 10) {
+    const middlewares = getRateLimitMiddlewares({ limit });
     await Promise.all(
         middlewares
             .map(applyMiddleware)

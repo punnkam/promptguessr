@@ -26,7 +26,7 @@ export default async function handler(
     res: NextApiResponse<Prompt | Error>
 ) {
     try {
-        await applyRateLimit(req, res);
+        await applyRateLimit(req, res, 100);
     } catch {
         res.status(429).json({ message: 'Too many requests!' });
         return;
