@@ -2,18 +2,19 @@ import './globals.css';
 import { Session } from 'next-auth';
 import { headers } from 'next/headers';
 import AuthContext from './AuthContext';
+import axios from 'axios';
 
-async function getSession(cookie: string): Promise<Session> {
-    const response = await fetch(
-        `${process.env.NEXTAUTH_URL}/api/auth/session`,
+async function getSession(cookie: string): Promise<Session | null> {
+    const response = await axios.get<Session>(
+        `http://127.0.0.1:3000/api/auth/session`,
         {
             headers: {
                 cookie,
             },
         }
     );
-
-    const session = await response.json();
+    // convert the response to a Session object
+    const session = response.data;
 
     return Object.keys(session).length > 0 ? session : null;
 }
