@@ -3,13 +3,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import type { Prompt, Error } from './types';
 
 import { initializeApp } from 'firebase/app';
-import {
-    getDoc,
-    getFirestore,
-    doc,
-    getCountFromServer,
-    collection,
-} from 'firebase/firestore';
+import { getDoc, getFirestore, doc } from 'firebase/firestore';
+
+import applyRateLimit from '../../utils/rateLimiter'; // https://kittygiraudel.com/2022/05/16/rate-limit-nextjs-api-routes/
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -30,9 +26,15 @@ export default async function handler(
     res: NextApiResponse<Prompt | Error>
 ) {
     try {
-        const promptCount: number = (
-            await getCountFromServer(collection(db, 'prompts'))
-        ).data().count;
+        await applyRateLimit(req, res);
+    } catch {
+        res.status(429).json({ message: 'Too many requests!' });
+        return;
+    }
+
+    try {
+        // TODO: Change to 1000 or something
+        const promptCount: number = 950;
 
         // Pick a random prompt from the database
         const randomPrompt: number = Math.floor(
@@ -50,7 +52,6 @@ export default async function handler(
             // Convert document data to Prompt
             const promptObj: Prompt = {
                 pid: randomPrompt.toString(),
-                prompt: promptResult.prompt,
                 image: promptResult.image,
                 length: promptResult.length,
                 hint_words: promptResult.hint_words,
