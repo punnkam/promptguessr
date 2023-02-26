@@ -11,6 +11,7 @@
   "dependencies": {
     "@firebase/app-types": "^0.8.1",
     "@next/font": "13.1.6",
+    "@radix-ui/react-aspect-ratio": "^1.0.1",
     "@radix-ui/react-context-menu": "^2.1.2",
     "@radix-ui/react-dialog": "^1.0.2",
     "@radix-ui/react-hover-card": "^1.0.4",

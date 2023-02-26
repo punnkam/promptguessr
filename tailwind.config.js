@@ -44,6 +44,10 @@ module.exports = {
       colors: {
         bg: '#F7F7F7',
       },
+      aspectRatio: {
+        '2/3': '2/3',
+      },
+
     },
   },
   plugins: [require('tailwindcss-animate', '@tailwindcss/typography')],

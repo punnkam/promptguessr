@@ -6,6 +6,12 @@ import styles from './page.module.css';
 import Rankings from '@/components/ui/rankings';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import axios from 'axios';
+import type { Prompt, SubmitResponse } from '../../pages/api/types';
+
+import { AspectRatio } from '@/components/ui/aspectratio';
+
+import Spinner from '@/components/ui/spinner';
 
 import { useEffect, useState } from 'react';
 import {
@@ -35,7 +41,44 @@ const mono = JetBrains_Mono({
 
 export default function Home() {
   const [open, setOpen] = React.useState(false);
+  const [scores, setScores] = useState<number[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const [prompt, setPrompt] = useState<Prompt | undefined>(undefined);
+  const [result, setResult] = useState<SubmitResponse | undefined>(undefined);
+  const [shortcutPressed, setShortcutPressed] = useState(false);
+
+  const getPrompt = async () => {
+    const prompt = await axios.get('/api/getPrompt');
+    return prompt;
+  };
+
+  const submitPrompt = () => {
+    // add error handling
+    if (inputValue === '') return;
+    if (prompt === undefined) return;
+    axios
+      .post(`/api/getSim?pid=${prompt.pid}`, {
+        guess: inputValue,
+      })
+      .then((res) => {
+        setResult(res.data);
+        setScores(scores.concat(res.data.similarity));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getPrompt()
+      .then((res) => {
+        setPrompt(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <main className={`${mono.className} `}>
       <div className={`${mono.className} flex h-screen bg-[#F7F7F7]`}>
@@ -59,22 +102,39 @@ export default function Home() {
             <Command className="z-50 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3">
               <div className="">
                 <CommandInput
-                  placeholder="Type prompt and press enter"
+                  placeholder="Type the prompt and press enter and get your scores!"
                   className={mono.className}
                   value={inputValue}
                   onInput={(event) =>
                     setInputValue((event.target as HTMLInputElement).value)
                   }
-                  onEnter={(value) => {
-                    // setTags([...tags, value]);
-                    // setInputValue('');
-                  }}
+                  onEnter={submitPrompt}
                 />
                 <CommandList>
                   {/* <CommandEmpty>
                   Type the prompt to generate and match the image on the right
                 </CommandEmpty> */}
-                  <div className="relative flex cursor-default select-none items-center rounded-md py-1.5 px-2 text-sm font-medium outline-none aria-selected:bg-slate-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-slate-700"></div>
+                  <div className="relative flex cursor-default select-none items-center rounded-md py-1.5 px-2 text-sm font-medium outline-none aria-selected:bg-slate-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-slate-700">
+                    {' '}
+                    <p className="mx-2 text-gray-500">Scores:</p>
+                    {scores.map((score, index) =>
+                      score < 0.9 ? (
+                        <div
+                          key={index}
+                          className="inline-flex items-center px-2 py-1 mr-2 text-sm font-medium text-indigo-800 bg-indigo-100 rounded dark:bg-indigo-900 dark:text-indigo-300"
+                        >
+                          {score}
+                        </div>
+                      ) : (
+                        <div
+                          key={index}
+                          className="inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-green-100 rounded green-indigo-800 dark:bg-green-900 dark:green-indigo-300"
+                        >
+                          {score}
+                        </div>
+                      )
+                    )}
+                  </div>
                   {/* <CommandSeparator /> */}
                 </CommandList>
                 <div className="flex flex-row justify-center mx-5 mt-5">
@@ -93,12 +153,13 @@ export default function Home() {
                       </Button>
                     </HoverCardTrigger>
                   </HoverCard>
-                  {/* <Button
-                  variant="default"
-                  className="text-white bg-green-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex w-20 "
-                >
-                  <p className="font-semibold text-white">Submit</p>
-                </Button> */}
+                  <Button
+                    variant="default"
+                    className="text-white bg-green-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex w-20 "
+                    onClick={submitPrompt}
+                  >
+                    <p className="font-semibold text-white">Submit</p>
+                  </Button>
                 </div>
               </div>
             </Command>
@@ -112,13 +173,42 @@ export default function Home() {
               <h1 className="flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
                 Given Image
               </h1>
-              <div className="w-full bg-white border border-gray-200 rounded-lg shadow max-w-4/5 dark:bg-gray-800 dark:border-gray-700 h-4/5"></div>
+              <div className="w-full bg-white border border-gray-200 rounded-lg shadow max-w-4/5 dark:bg-gray-800 dark:border-gray-700 h-4/5">
+                {/* <AspectRatio> */}
+                {prompt ? (
+                  <Image
+                    src={prompt ? prompt.image : ''}
+                    alt="Prompt to guess :)"
+                    objectFit="cover"
+                    height={500}
+                    width={500}
+                    className="object-contain w-full h-full rounded-lg aspect-auto"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <Spinner />
+                  </div>
+                )}
+                {/* </AspectRatio> */}
+              </div>
               <div className="flex flex-row justify-center mt-5">
                 <Button
                   variant="default"
-                  className="text-white bg-sky-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex w-24"
+                  className="text-white bg-sky-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 flex w-24	"
+                  onClick={() => {
+                    setPrompt(undefined);
+                    setInputValue('');
+                    setScores([]);
+                    getPrompt()
+                      .then((res) => {
+                        setPrompt(res.data);
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
+                  }}
                 >
-                  <p className="font-semibold text-white">Next&nbsp;</p>
+                  <p className="font-semibold text-white">Shuffle&nbsp;</p>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
