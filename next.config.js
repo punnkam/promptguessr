@@ -11,6 +11,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lexica-serve-encoded-images.sharif.workers.dev',
+        port: '',
+        pathname: '/**'
+      }
     ],
   },
 }

@@ -9,8 +9,8 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import type { Prompt, SubmitResponse } from '../../pages/api/types';
 import type { Image as LexicaImage } from 'lexica-api';
-
 import { AspectRatio } from '@/components/ui/aspectratio';
+import Modal from '@/components/ui/modal';
 
 import Spinner from '@/components/ui/spinner';
 
@@ -41,12 +41,13 @@ const mono = JetBrains_Mono({
 });
 
 export default function Home() {
-    const [open, setOpen] = React.useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [scores, setScores] = useState<number[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [prompt, setPrompt] = useState<Prompt | undefined>(undefined);
     const [result, setResult] = useState<SubmitResponse | undefined>(undefined);
     const [search, setSearch] = useState<LexicaImage[]>([]);
+    const [guessImg, setGuessImg] = useState('');
     const [shortcutPressed, setShortcutPressed] = useState(false);
 
     const getPrompt = async () => {
@@ -76,16 +77,23 @@ export default function Home() {
             })
             .then((res) => {
                 setSearch(res.data);
+                setGuessImg(res.data[0].src);
             })
             .catch((err) => {
                 console.log(err);
             });
     };
 
+    const showAnswer = (bool: boolean) => {
+        if (result === undefined) return;
+        setShowModal(bool);
+    };
+
     useEffect(() => {
         getPrompt()
             .then((res) => {
                 setPrompt(res.data);
+                console.log('current prompt', res.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -94,19 +102,23 @@ export default function Home() {
 
     return (
         <main className={`${mono.className} `}>
+            {showModal && (
+                <Modal setShowModal={setShowModal} body={result?.prompt} />
+            )}
             <div className={`${mono.className} flex h-screen bg-[#F7F7F7]`}>
                 {/* column 1 */}
                 <div className='flex items-center justify-center w-1/2 '>
                     <div className='flex flex-col items-center justify-center w-3/4 gap-2 h-4/5'>
                         {/* User inputted image */}
 
-                        <Command className='z-50 flex justify-center w-full px-4 pt-2 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
+                        <Command className='z-10 flex justify-center w-full px-4 pt-2 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
                             <h1 className='flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
                                 {result ? 'Your Guess' : 'Submit a Guess!'}
                             </h1>
                             <div className='relative w-full h-full bg-white border border-gray-200 rounded-lg shadow max-w-4/5 dark:bg-gray-800 dark:border-gray-700 '>
                                 <Image
                                     src={
+                                        guessImg ||
                                         'https://lexica-serve-encoded-images2.sharif.workers.dev/full_jpg/7ba81728-87c7-4858-9366-aeaa3058c475'
                                     }
                                     alt='Generated Image'
@@ -146,7 +158,7 @@ export default function Home() {
                         </Command>
 
                         {/* Typing prompt Dialog */}
-                        <Command className='z-50 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3'>
+                        <Command className='z-10 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3'>
                             <div className=''>
                                 <CommandInput
                                     placeholder='Type the prompt and press enter and get your scores!'
@@ -195,6 +207,7 @@ export default function Home() {
                                             <Button
                                                 variant='default'
                                                 className='text-white bg-orange-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex w-25  '
+                                                onClick={() => showAnswer(true)}
                                             >
                                                 <p className='font-semibold text-white'>
                                                     See answer
@@ -226,7 +239,7 @@ export default function Home() {
                 {/* column 2 */}
                 <div className='flex items-center justify-center w-1/2 p-2'>
                     <div className='w-3/4 h-4/5'>
-                        <Command className='z-50 flex justify-center w-full px-4 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
+                        <Command className='z-10 flex justify-center w-full px-4 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
                             <h1 className='flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
                                 Given Image
                             </h1>
@@ -257,6 +270,7 @@ export default function Home() {
                                         setPrompt(undefined);
                                         setInputValue('');
                                         setScores([]);
+                                        setGuessImg('');
                                         getPrompt()
                                             .then((res) => {
                                                 setPrompt(res.data);
