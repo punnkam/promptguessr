@@ -62,11 +62,21 @@ export default async function handler(
             });
             const guessVector = guessEmbedding.data.data[0].embedding;
 
-            const promptEmbedding = await openai.createEmbedding({
-                model: 'text-embedding-ada-002',
-                input: prompt.data().prompt,
-            });
-            const promptVector = promptEmbedding.data.data[0].embedding;
+            let promptEmbedding = null;
+
+            try {
+                promptEmbedding = await openai.createEmbedding({
+                    model: 'text-embedding-ada-002',
+                    input: prompt.data().prompt,
+                });
+                if (!promptEmbedding) throw new Error('No prompt embedding');
+            } catch (err: any) {
+                res.status(401).json({
+                    message: `OpenAI Error: ${err.message}`,
+                });
+            }
+
+            const promptVector = promptEmbedding?.data.data[0].embedding;
 
             const similarity = calculateCosineSimilarity(
                 guessVector,
@@ -89,15 +99,19 @@ export default async function handler(
     }
 }
 
-function calculateCosineSimilarity(vectorA: number[], vectorB: number[]) {
+function calculateCosineSimilarity(
+    vectorA: number[] | undefined,
+    vectorB: number[] | undefined
+) {
     let dotProduct = 0;
     let magnitudeA = 0;
     let magnitudeB = 0;
-
-    for (let i = 0; i < vectorA.length; i++) {
-        dotProduct += vectorA[i] * vectorB[i];
-        magnitudeA += vectorA[i] * vectorA[i];
-        magnitudeB += vectorB[i] * vectorB[i];
+    if (vectorA && vectorB) {
+        for (let i = 0; i < vectorA.length; i++) {
+            dotProduct += vectorA[i] * vectorB[i];
+            magnitudeA += vectorA[i] * vectorA[i];
+            magnitudeB += vectorB[i] * vectorB[i];
+        }
     }
 
     return dotProduct / Math.sqrt(magnitudeA * magnitudeB);
