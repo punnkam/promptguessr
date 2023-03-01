@@ -61,14 +61,18 @@ export default function Home() {
         if (prompt === undefined) return;
         axios
             .post(`/api/getSim?pid=${prompt.pid}`, {
-                guess: inputValue,
+                guess: "chicken",
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+                },
             })
             .then((res) => {
                 setResult(res.data);
                 setScores(scores.concat(res.data.similarity));
             })
             .catch((err) => {
-                console.log(err);
+                console.log(err.response.data);
             });
 
         axios
