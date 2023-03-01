@@ -2,9 +2,14 @@
 import { SessionProvider } from 'next-auth/react';
 
 export function Providers({
-    children,
-    pageProps: { session, ...pageProps },
+  children,
+  pageProps: { session, ...pageProps },
 }: any) {
-    console.log(pageProps);
-    return <SessionProvider session={session}>{children}</SessionProvider>;
+  console.log(pageProps);
+  return (
+    <SessionProvider session={session}>
+      {' '}
+      {children}
+    </SessionProvider>
+  );
 }
