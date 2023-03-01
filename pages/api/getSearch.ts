@@ -32,6 +32,6 @@ export default async function handler(
         // send result
         res.status(200).json(results.images.slice(0, 5));
     } catch (e: any) {
-        res.status(400).json({ message: e });
+        res.status(400).json({ message: e.message });
     }
 }
