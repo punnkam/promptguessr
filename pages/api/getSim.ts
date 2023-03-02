@@ -9,12 +9,12 @@ import applyRateLimit from '../../utils/rateLimiter'; // https://kittygiraudel.c
 
 // Initialize Firebase and Firestore
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: 'prompt-guessr.firebaseapp.com',
-  projectId: 'prompt-guessr',
-  storageBucket: 'prompt-guessr.appspot.com',
-  messagingSenderId: process.env.FIREBASE_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: 'prompt-guessr.firebaseapp.com',
+    projectId: 'prompt-guessr',
+    storageBucket: 'prompt-guessr.appspot.com',
+    messagingSenderId: process.env.FIREBASE_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -22,45 +22,45 @@ const db = getFirestore(app);
 
 // Initialize OpenAI API
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 // Get similarity score between prompt and guess
 export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<SubmitResponse | Error>
+    req: NextApiRequest,
+    res: NextApiResponse<SubmitResponse | Error>
 ) {
-  try {
-    await applyRateLimit(req, res);
-  } catch {
-    res.status(429).json({ message: 'Too many requests!' });
-    return;
-  }
-
-  // TODO: possible store existing embeddings in firebase
-  try {
-    const { pid } = req.query;
-    const { guess } = req.body;
-
-    if (!pid) {
-      res.status(400).json({ message: 'No prompt id provided' });
-      return;
+    try {
+        await applyRateLimit(req, res);
+    } catch {
+        res.status(429).json({ message: 'Too many requests!' });
+        return;
     }
 
-    if (!guess) {
-      res.status(400).json({ message: 'No guess provided' });
-      return;
-    }
+    // TODO: possible store existing embeddings in firebase
+    try {
+        const { pid } = req.query;
+        const { guess } = req.body;
 
-    const prompt = await getDoc(doc(db, 'prompts', pid as string));
-    if (prompt.exists()) {
-      // Call OpenAI API to get similarity score
-      const guessEmbedding = await openai.createEmbedding({
-        model: 'text-embedding-ada-002',
-        input: guess,
-      });
-      const guessVector = guessEmbedding.data.data[0].embedding;
+        if (!pid) {
+            res.status(400).json({ message: 'No prompt id provided' });
+            return;
+        }
+
+        if (!guess) {
+            res.status(400).json({ message: 'No guess provided' });
+            return;
+        }
+
+        const prompt = await getDoc(doc(db, 'prompts', pid as string));
+        if (prompt.exists()) {
+            // Call OpenAI API to get similarity score
+            const guessEmbedding = await openai.createEmbedding({
+                model: 'text-embedding-ada-002',
+                input: guess,
+            });
+            const guessVector = guessEmbedding.data.data[0].embedding;
 
             let promptEmbedding = null;
 
@@ -78,24 +78,26 @@ export default async function handler(
 
             const promptVector = promptEmbedding?.data.data[0].embedding;
 
-      const similarity = calculateCosineSimilarity(guessVector, promptVector);
+            const similarity = calculateCosineSimilarity(
+                guessVector,
+                promptVector
+            );
 
-      // If similarity is greater than 0.9, update the leaderboard
-      console.log(promptEmbedding);
-      res.send({
-        pid: pid as string,
-        prompt: prompt.data().prompt,
-        similarity: Math.round(similarity * 100) / 100,
-        won: similarity > 0.9,
-      });
-    } else {
-      res.status(404).json({ message: `Prompt ${pid} not found` });
+            // If similarity is greater than 0.9, update the leaderboard
+            res.send({
+                pid: pid as string,
+                prompt: prompt.data().prompt,
+                similarity: Math.round(similarity * 100) / 100,
+                won: similarity > 0.9,
+            });
+        } else {
+            res.status(404).json({ message: `Prompt ${pid} not found` });
+        }
+    } catch (e: any) {
+        res.status(500).json({ message: e.message });
+        // to log the error in the console, uncomment the following line
+        console.error(e);
     }
-  } catch (e: any) {
-    res.status(500).json({ message: e.message });
-    // to log the error in the console, uncomment the following line
-    console.error(e);
-  }
 }
 
 function calculateCosineSimilarity(
@@ -113,5 +115,5 @@ function calculateCosineSimilarity(
         }
     }
 
-  return dotProduct / Math.sqrt(magnitudeA * magnitudeB);
+    return dotProduct / Math.sqrt(magnitudeA * magnitudeB);
 }
