@@ -46,7 +46,10 @@ export default function Home() {
           <div>
             <Link href="/guessr">
               <div className="mt-6 relative border rounded-md before:absolute before:-bottom-2 before:border-sky-500 before:-right-2 before:h-8 before:w-8 before:rounded-lg before:border-b before:border-r before:transition-all before:duration-300 before:ease-in-out after:absolute after:-top-2 after:-left-2 after:h-8 after:w-8 after:border-t after:border-l after:transition-all after:duration-300 after:ease-in-out hover:before:h-[calc(100%+16px)] hover:before:w-[calc(100%+16px)] hover:after:h-[calc(100%+16px)] hover:after:w-[calc(100%+16px)] h-15 w-28 after:border-sky-500 after:rounded-lg mx-auto my-auto">
-                <Button className="flex px-10 mx-auto my-auto font-semibold text-white lg:text-xl dark:text-sky-400">
+                <Button
+                  variant="default"
+                  className="mx-auto my-auto font-semibold text-white w-28 px-auto bg-sky-500 lex lg:text-xl dark:text-sky-400"
+                >
                   Play!
                 </Button>
               </div>
@@ -54,7 +57,6 @@ export default function Home() {
           </div>
         </div>
         <Rankings />
-      
       </div>
     </div>
   );

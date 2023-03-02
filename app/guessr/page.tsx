@@ -12,6 +12,7 @@ import type { Image as LexicaImage } from 'lexica-api';
 import { AspectRatio } from '@/components/ui/aspectratio';
 import Modal from '@/components/ui/modal';
 import { ToastWithTitle } from '@/components/ui/toastwithtitle';
+import Login from '@/components/ui/loginmenu';
 
 import Spinner from '@/components/ui/spinner';
 
@@ -35,6 +36,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hovercard';
 import { useToast } from '@/hooks/ui/usetoast';
+import { Toast } from '@/components/ui/toast';
 
 const mono = JetBrains_Mono({
   subsets: ['latin'],
@@ -73,6 +75,11 @@ export default function Home() {
       .then((res) => {
         setResult(res.data);
         setScores(scores.concat(res.data.similarity));
+        toast({
+          title: 'Submission Successful!',
+          description: 'Check below to see your score',
+          className: 'bg-green-500 text-white ',
+        });
       })
       .catch((err) => {
         console.log(err.response.data);
@@ -108,11 +115,16 @@ export default function Home() {
   }, []);
 
   return (
-    <main className={`${mono.className} `}>
+    <main className={`${mono.className} bg-[#F7F7F7]`}>
+      <div className="absolute top-0 right-0 m-4">
+        <Login />
+      </div>
       {showModal && <Modal setShowModal={setShowModal} body={result?.prompt} />}
-      <div className={`${mono.className} flex h-screen bg-[#F7F7F7]`}>
+      <div
+        className={`${mono.className} flex flex-row h-screen w-screen bg-[#F7F7F7]`}
+      >
         {/* column 1 */}
-        <div className="flex items-center justify-center w-1/2 ">
+        <div className="flex flex-col items-center justify-center w-1/2 ">
           <div className="flex flex-col items-center justify-center w-3/4 gap-2 h-4/5">
             {/* User inputted image */}
 
@@ -157,12 +169,11 @@ export default function Home() {
                 )}
               </div>
             </Command>
-
             {/* Typing prompt Dialog */}
             <Command className="z-10 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3">
               <div className="">
                 <CommandInput
-                  placeholder="Type the prompt and press enter and get your scores!"
+                  placeholder="Guess a prompt and press enter to get your score!"
                   className={mono.className}
                   value={inputValue}
                   onInput={(event) =>
@@ -171,11 +182,7 @@ export default function Home() {
                   onEnter={submitPrompt}
                 />
                 <CommandList>
-                  {/* <CommandEmpty>
-                  Type the prompt to generate and match the image on the right
-                </CommandEmpty> */}
                   <div className="relative flex cursor-default select-none items-center rounded-md py-1.5 px-2 text-sm font-medium outline-none aria-selected:bg-slate-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:aria-selected:bg-slate-700">
-                    {' '}
                     <p className="mx-2 text-gray-500">Scores:</p>
                     {scores.map((score, index) =>
                       score < 0.9 ? (
@@ -208,7 +215,8 @@ export default function Home() {
                         <p className="font-semibold text-white">See answer</p>
                         <HoverCardContent>
                           <text className="font-semibold text-black">
-                            Click on this to reveal the answer to the prompt
+                            Click on this to reveal the answer to the prompt ~
+                            After submitting your guess
                           </text>
                         </HoverCardContent>
                       </Button>
@@ -221,11 +229,6 @@ export default function Home() {
                     onClick={() => {
                       if (inputValue) {
                         submitPrompt();
-                        toast({
-                          title: 'Submission Successful!',
-                          description: 'Check below to see your score',
-                          className: 'bg-green-500 text-white',
-                        });
                       } else {
                         alert('Please enter a prompt');
                       }
@@ -238,9 +241,8 @@ export default function Home() {
             </Command>
           </div>
         </div>
-
         {/* column 2 */}
-        <div className="flex items-center justify-center w-1/2 p-2">
+        <div className="flex flex-col items-center justify-center w-1/2 p-2">
           <div className="w-3/4 h-4/5">
             <Command className="z-10 flex justify-center w-full px-4 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800">
               <h1 className="flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
@@ -268,7 +270,7 @@ export default function Home() {
               <div className="flex flex-row justify-center mt-5">
                 <Button
                   variant="default"
-                  className="text-white bg-sky-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex w-24	"
+                  className="text-white bg-sky-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex 	"
                   onClick={() => {
                     setPrompt(undefined);
                     setInputValue('');
@@ -286,18 +288,20 @@ export default function Home() {
                   <p className="font-semibold text-white">Shuffle&nbsp;</p>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
+                    width="15"
+                    height="15"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   >
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 16 16 12 12 8"></polyline>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
                   </svg>
                 </Button>
               </div>

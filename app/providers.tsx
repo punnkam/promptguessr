@@ -6,10 +6,5 @@ export function Providers({
   pageProps: { session, ...pageProps },
 }: any) {
   console.log(pageProps);
-  return (
-    <SessionProvider session={session}>
-      {' '}
-      {children}
-    </SessionProvider>
-  );
+  return <SessionProvider session={session}>{children}</SessionProvider>;
 }
