@@ -37,13 +37,16 @@ export default async function handler(
         const promptCount: number = 950;
 
         // Pick a random prompt from the database
-        const randomPrompt: number = Math.floor(
+        let randomPrompt: number = Math.floor(
             Math.random() * (promptCount + 1)
         );
 
-        const prompt = await getDoc(
-            doc(db, 'prompts', randomPrompt.toString())
-        );
+        let prompt = await getDoc(doc(db, 'prompts', randomPrompt.toString()));
+
+        if (!prompt.exists()) {
+            randomPrompt = Math.floor(Math.random() * (promptCount + 1));
+            prompt = await getDoc(doc(db, 'prompts', randomPrompt.toString()));
+        }
 
         // If prompt exists, return it
         if (prompt.exists()) {
