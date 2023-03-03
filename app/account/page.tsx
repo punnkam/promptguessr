@@ -1,8 +1,8 @@
-'use client';
+// 'use client';
 import React from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signIn, signOut, getSession } from 'next-auth/react';
 
-export default function Account() {
+const account = () => {
   const { data: session, status } = useSession();
   console.log(session);
 
@@ -19,4 +19,14 @@ export default function Account() {
       </div>
     );
   }
+};
+
+export default account;
+
+export async function getServerSideProps(context: any) {
+  const session = await getSession(context);
+
+  return {
+    props: { session },
+  };
 }
