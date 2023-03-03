@@ -46,6 +46,7 @@ const mono = JetBrains_Mono({
 
 export default function Home() {
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [showHint, setShowHint] = useState<boolean>(false);
     const [modalBody, setModalBody] = useState<string>('');
     const [modalTitle, setModalTitle] = useState<string>('');
     const [score, setScore] = useState(undefined);
@@ -120,14 +121,6 @@ export default function Home() {
         setShowModal(bool);
     };
 
-    const showHowTo = (bool: boolean) => {
-        setModalTitle('How to Play');
-        setModalBody(
-            'Make a guess, see your score and generated image, and try again until you win!'
-        );
-        setShowModal(bool);
-    };
-
     useEffect(() => {
         getPrompt()
             .then((res) => {
@@ -189,7 +182,11 @@ export default function Home() {
                                                     return (
                                                         <div
                                                             key={index}
-                                                            className='inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-gray-100 rounded green-gray-800 dark:bg-gray-900 dark:green-gray-300'
+                                                            className={`${
+                                                                showHint
+                                                                    ? ''
+                                                                    : 'blur-sm'
+                                                            } inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-gray-100 rounded  green-gray-800 dark:bg-gray-900 dark:green-gray-300`}
                                                         >
                                                             {word}
                                                         </div>
@@ -199,7 +196,13 @@ export default function Home() {
                                     </span>
                                     <span>
                                         Length:{' '}
-                                        {prompt && `${prompt.length} words`}{' '}
+                                        <span
+                                            className={`${
+                                                showHint ? '' : 'blur-sm'
+                                            }`}
+                                        >
+                                            {prompt && `${prompt.length} words`}{' '}
+                                        </span>
                                     </span>
                                 </div>
                             </div>
@@ -208,7 +211,7 @@ export default function Home() {
                         <Command className='z-10 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3'>
                             <div className=''>
                                 <CommandInput
-                                    placeholder='Guess a prompt and press enter to get your score!'
+                                    placeholder='Guess a prompt and press enter!'
                                     className={mono.className}
                                     value={inputValue}
                                     onInput={(event) =>
@@ -239,32 +242,35 @@ export default function Home() {
                                     {/* <CommandSeparator /> */}
                                 </CommandList>
                                 <div className='flex flex-row justify-center gap-2 mx-5 mt-5'>
-                                    <Button
-                                        variant='default'
-                                        className='text-white bg-blue-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex w-25  '
-                                        onClick={() => showHowTo(true)}
-                                    >
-                                        <p className='font-semibold text-white'>
-                                            How to play?
-                                        </p>
-                                    </Button>
                                     <HoverCard>
                                         <HoverCardTrigger>
                                             <Button
                                                 variant='default'
-                                                className='text-white bg-orange-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex w-25  '
+                                                className={`text-white focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center flex w-25 ${
+                                                    result || !showHint
+                                                        ? 'bg-orange-500 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700'
+                                                        : 'bg-orange-200'
+                                                } `}
                                                 onClick={() => {
-                                                    result && showAnswer(true);
+                                                    if (showHint) {
+                                                        result &&
+                                                            showAnswer(true);
+                                                    } else {
+                                                        setShowHint(true);
+                                                    }
                                                 }}
                                             >
                                                 <p className='font-semibold text-white'>
-                                                    See answer
+                                                    See{' '}
+                                                    {showHint
+                                                        ? 'Answer'
+                                                        : 'Hint'}
                                                 </p>
                                                 <HoverCardContent>
                                                     <text className='font-semibold text-black'>
                                                         {result
                                                             ? 'Click on this to reveal the answer to the prompt'
-                                                            : 'Submit a guess to see the answer'}
+                                                            : 'Submit a guess first'}
                                                     </text>
                                                 </HoverCardContent>
                                             </Button>
