@@ -4,19 +4,19 @@ import { useToast } from '@/hooks/ui/usetoast';
 
 import { Button } from '@/components/ui/button';
 
-export function ToastWithTitle() {
-  const { toast } = useToast();
+export function ToastWithTitle({ title, description }: any) {
+    const { toast } = useToast();
 
-  return (
-    <Button
-      onClick={() => {
-        toast({
-          title: 'Submission Successful!',
-          description: 'Check below to see your score',
-        });
-      }}
-    >
-      Show Toast
-    </Button>
-  );
+    return (
+        <Button
+            onClick={() => {
+                toast({
+                    title: title,
+                    description: description,
+                });
+            }}
+        >
+            Show Toast
+        </Button>
+    );
 }

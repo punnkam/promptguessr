@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Modal({ setShowModal, body }: any) {
+export default function Modal({ setShowModal, title, body }: any) {
     return (
         <>
             <div className='fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none'>
@@ -9,7 +9,7 @@ export default function Modal({ setShowModal, body }: any) {
                     <div className='relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none'>
                         {/*header*/}
                         <div className='flex items-start justify-between p-5 border-b border-solid rounded-t border-slate-200'>
-                            <h3 className='text-3xl font-semibold'>Answer</h3>
+                            <h3 className='text-3xl font-semibold'>{title}</h3>
                             <button
                                 className='float-right p-1 ml-auto text-3xl font-semibold leading-none text-black bg-transparent border-0 outline-none opacity-5 focus:outline-none'
                                 onClick={() => setShowModal(false)}

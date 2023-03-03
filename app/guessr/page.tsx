@@ -45,14 +45,16 @@ const mono = JetBrains_Mono({
 });
 
 export default function Home() {
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [modalBody, setModalBody] = useState<string>('');
+    const [modalTitle, setModalTitle] = useState<string>('');
     const [score, setScore] = useState(undefined);
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState<string>('');
     const [prompt, setPrompt] = useState<Prompt | undefined>(undefined);
     const [result, setResult] = useState<SubmitResponse | undefined>(undefined);
     const [search, setSearch] = useState<LexicaImage[]>([]);
-    const [guessImg, setGuessImg] = useState('');
-    const [shortcutPressed, setShortcutPressed] = useState(false);
+    const [guessImg, setGuessImg] = useState<string>('');
+    const [shortcutPressed, setShortcutPressed] = useState<boolean>(false);
     const { toast } = useToast();
 
     const getPrompt = async () => {
@@ -75,10 +77,23 @@ export default function Home() {
             .then((res) => {
                 setResult(res.data);
                 setScore(res.data.similarity);
+                const won = res.data.similarity > 0.9;
+                const close = res.data.similarity > 0.8;
+
                 toast({
-                    title: 'Submission Successful!',
+                    title: won
+                        ? 'Your guess is correct!'
+                        : close
+                        ? 'Your guess is close!'
+                        : 'Your guess is incorrect',
                     description: 'Check below to see your score',
-                    className: 'bg-green-500 text-white ',
+                    className: `${
+                        won
+                            ? 'bg-green-500'
+                            : close
+                            ? 'bg-amber-500'
+                            : 'bg-red-500'
+                    } text-white `,
                 });
             })
             .catch((err) => {
@@ -100,6 +115,16 @@ export default function Home() {
 
     const showAnswer = (bool: boolean) => {
         if (result === undefined) return;
+        setModalBody(result?.prompt ?? '');
+        setModalTitle('Answer');
+        setShowModal(bool);
+    };
+
+    const showHowTo = (bool: boolean) => {
+        setModalTitle('How to Play');
+        setModalBody(
+            'Make a guess, see your score and generated image, and try again until you win!'
+        );
         setShowModal(bool);
     };
 
@@ -120,7 +145,11 @@ export default function Home() {
                 <Login />
             </div>
             {showModal && (
-                <Modal setShowModal={setShowModal} body={result?.prompt} />
+                <Modal
+                    setShowModal={setShowModal}
+                    title={modalTitle}
+                    body={modalBody}
+                />
             )}
             <div
                 className={`${mono.className} flex flex-row h-screen w-screen bg-[#F7F7F7]`}
@@ -210,22 +239,32 @@ export default function Home() {
                                     {/* <CommandSeparator /> */}
                                 </CommandList>
                                 <div className='flex flex-row justify-center gap-2 mx-5 mt-5'>
+                                    <Button
+                                        variant='default'
+                                        className='text-white bg-blue-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex w-25  '
+                                        onClick={() => showHowTo(true)}
+                                    >
+                                        <p className='font-semibold text-white'>
+                                            How to play?
+                                        </p>
+                                    </Button>
                                     <HoverCard>
                                         <HoverCardTrigger>
                                             <Button
                                                 variant='default'
                                                 className='text-white bg-orange-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex w-25  '
-                                                onClick={() => showAnswer(true)}
+                                                onClick={() => {
+                                                    result && showAnswer(true);
+                                                }}
                                             >
                                                 <p className='font-semibold text-white'>
                                                     See answer
                                                 </p>
                                                 <HoverCardContent>
                                                     <text className='font-semibold text-black'>
-                                                        Click on this to reveal
-                                                        the answer to the prompt
-                                                        ~ After submitting your
-                                                        guess
+                                                        {result
+                                                            ? 'Click on this to reveal the answer to the prompt'
+                                                            : 'Submit a guess to see the answer'}
                                                     </text>
                                                 </HoverCardContent>
                                             </Button>
