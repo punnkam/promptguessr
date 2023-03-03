@@ -182,10 +182,10 @@ export default function Home() {
                                                     return (
                                                         <div
                                                             key={index}
-                                                            className={`${
+                                                            className={`blur-${
                                                                 showHint
-                                                                    ? ''
-                                                                    : 'blur-sm'
+                                                                    ? 'none'
+                                                                    : 'sm'
                                                             } inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-gray-100 rounded  green-gray-800 dark:bg-gray-900 dark:green-gray-300`}
                                                         >
                                                             {word}
@@ -197,8 +197,8 @@ export default function Home() {
                                     <span>
                                         Length:{' '}
                                         <span
-                                            className={`${
-                                                showHint ? '' : 'blur-sm'
+                                            className={`blur-${
+                                                showHint ? 'none' : 'sm'
                                             }`}
                                         >
                                             {prompt && `${prompt.length} words`}{' '}
@@ -211,7 +211,7 @@ export default function Home() {
                         <Command className='z-10 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3'>
                             <div className=''>
                                 <CommandInput
-                                    placeholder='Guess a prompt and press enter!'
+                                    placeholder='Guess the prompt and press enter!'
                                     className={mono.className}
                                     value={inputValue}
                                     onInput={(event) =>
@@ -220,7 +220,13 @@ export default function Home() {
                                                 .value
                                         )
                                     }
-                                    onEnter={submitPrompt}
+                                    onEnter={() => {
+                                        if (inputValue) {
+                                            submitPrompt();
+                                        } else {
+                                            alert('Please enter a prompt');
+                                        }
+                                    }}
                                 />
                                 <CommandList>
                                     {score !== undefined && (
@@ -249,7 +255,7 @@ export default function Home() {
                                                 className={`text-white focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center flex w-25 ${
                                                     result || !showHint
                                                         ? 'bg-orange-500 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700'
-                                                        : 'bg-orange-200'
+                                                        : 'bg-orange-200 hover:none focus:none'
                                                 } `}
                                                 onClick={() => {
                                                     if (showHint) {
@@ -270,7 +276,7 @@ export default function Home() {
                                                     <text className='font-semibold text-black'>
                                                         {result
                                                             ? 'Click on this to reveal the answer to the prompt'
-                                                            : 'Submit a guess first'}
+                                                            : 'Submit a guess'}
                                                     </text>
                                                 </HoverCardContent>
                                             </Button>
