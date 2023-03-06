@@ -19,7 +19,11 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ['class', '[data-theme="dark"]'],
-  content: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}', ,],
+  content: [
+    'app/**/*.{ts,tsx}',
+    'components/**/*.{ts,tsx}',
+    'pages/**/*.{ts,tsx}',
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -47,10 +51,11 @@ module.exports = {
       aspectRatio: {
         '2/3': '2/3',
       },
-
     },
   },
-  plugins: [require('tailwindcss-animate', '@tailwindcss/typography')],
+  plugins: [
+    require('tailwindcss-animate', '@tailwindcss/typography', '@tailwindcss/forms', '@tailwindcss/aspect-ratio'),
+  ],
   css: [
     // ...
     './styles/globals.css',

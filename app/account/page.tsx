@@ -1,4 +1,5 @@
 // 'use client';
+// the personal account page
 import React from 'react';
 import { useSession, signIn, signOut, getSession } from 'next-auth/react';
 

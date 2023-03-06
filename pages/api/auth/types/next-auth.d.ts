@@ -6,6 +6,7 @@ declare module 'next-auth' {
    */
   interface Session {
     user: {
+      email: any;
       image: string | undefined;
       name: ReactNode;
       /** The user's postal address. */
