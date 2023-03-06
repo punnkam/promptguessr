@@ -9,20 +9,15 @@ import { getProviders, signIn, ClientSafeProvider } from 'next-auth/react';
 import { authOptions } from '../api/auth/[...nextauth]';
 import '../tailwind.css';
 
-type ProviderType = 'Google'; // You can add more providers here
+function handleSignIn() {
+  const state = Math.random().toString(36).substring(2);
+  signIn('google', {
+    callbackUrl: 'http://localhost:3000/api/auth/callback/google',
+    state,
+  });
+}
 
-type Provider = {
-  id: ProviderType;
-  name: string;
-};
-
-type Props = {
-  providers: Record<ProviderType, ClientSafeProvider> | null;
-};
-
-export default function SignIn({
-  providers,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function SignIn() {
   return (
     <div className="flex flex-col justify-center min-h-full py-12 sm:px-6 lg:px-8">
       <div className="mt-12 sm:mx-auto sm:w-full sm:max-w-md">
@@ -44,7 +39,15 @@ export default function SignIn({
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" action="#" method="POST">
+          <form
+            className="space-y-6"
+            action="#"
+            method="POST"
+            onSubmit={(e) => {
+              e.preventDefault();
+              signIn('google');
+            }}
+          >
             <div>
               <label
                 htmlFor="email"
@@ -114,7 +117,8 @@ export default function SignIn({
               <button
                 type="submit"
                 className="flex justify-center w-full px-3 py-2 text-sm font-semibold text-white rounded-md shadow-sm roundyd-md bg-sky-600 hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-60"
-                onClick={() => signIn()}
+                // onClick={() => signIn()} This just redirects to sign-in page
+                // onClick={() => signIn('email', { email })} When using it with the email flow, pass the target email as an option. Might need nodemailer
               >
                 Sign in
               </button>
@@ -135,57 +139,60 @@ export default function SignIn({
 
             {/* <div className="grid grid-cols-3 gap-3 mt-6"> */}
             <div className="grid grid-cols-1 gap-3 mt-6">
-              {providers &&
-                Object.values(providers).map((provider) => (
-                  <div key={provider.name}>
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center w-full px-4 py-2 text-gray-500 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
-                      onClick={() => signIn(provider.id)}
-                    >
-                      {/* Sign in with{' '}   */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlnsXlink="http://www.w3.org/1999/xlink"
-                        viewBox="0 0 45 45"
-                        className="flex justify-center w-4 h-4 mx-1 align-center"
-                        aria-hidden="true"
-                        fill="currentColor"
-                        // viewBox="0 0 20 20"
-                      >
-                        <defs>
-                          <path
-                            id="a"
-                            d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"
-                          />
-                        </defs>
-                        <clipPath id="b">
-                          <use xlinkHref="#a" overflow="visible" />
-                        </clipPath>
-                        <path
-                          clipPath="url(#b)"
-                          fill="#FBBC05"
-                          d="M0 37V11l17 13z"
-                        />
-                        <path
-                          clipPath="url(#b)"
-                          fill="#EA4335"
-                          d="M0 11l17 13 7-6.1L48 14V0H0z"
-                        />
-                        <path
-                          clipPath="url(#b)"
-                          fill="#34A853"
-                          d="M0 37l30-23 7.9 1L48 0v48H0z"
-                        />
-                        <path
-                          clipPath="url(#b)"
-                          fill="#4285F4"
-                          d="M48 48L17 24l-4-3 35-10z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
+              <div>
+                <button
+                  type="submit"
+                  className="inline-flex justify-center w-full px-4 py-2 text-gray-500 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
+                  onClick={() =>
+                    signIn('google', {
+                      callbackUrl:
+                        'http://localhost:3000/api/auth/callback/google', // after successful sign-in, redirect to this page
+                    })
+                  } // Starts OAuth sign-in flow when clicked (google here is the provider)
+                >
+                  {/* Sign in with{' '}   */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 45 45"
+                    className="flex justify-center w-4 h-4 mx-1 align-center"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    // viewBox="0 0 20 20"
+                  >
+                    <defs>
+                      <path
+                        id="a"
+                        d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"
+                      />
+                    </defs>
+                    <clipPath id="b">
+                      <use xlinkHref="#a" overflow="visible" />
+                    </clipPath>
+                    <path
+                      clipPath="url(#b)"
+                      fill="#FBBC05"
+                      d="M0 37V11l17 13z"
+                    />
+                    <path
+                      clipPath="url(#b)"
+                      fill="#EA4335"
+                      d="M0 11l17 13 7-6.1L48 14V0H0z"
+                    />
+                    <path
+                      clipPath="url(#b)"
+                      fill="#34A853"
+                      d="M0 37l30-23 7.9 1L48 0v48H0z"
+                    />
+                    <path
+                      clipPath="url(#b)"
+                      fill="#4285F4"
+                      d="M48 48L17 24l-4-3 35-10z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              {/* ))} */}
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ declare module 'next-auth' {
    */
   interface Session {
     user: {
+      id: string;
       email: any;
       image: string | undefined;
       name: ReactNode;

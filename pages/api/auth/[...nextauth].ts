@@ -1,39 +1,54 @@
-// import { signUp } from '@/firebase/auth/signup';
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
 import { FirestoreAdapter } from '@next-auth/firebase-adapter';
+import firebase from 'firebase-admin';
+import { NextApiRequest, NextApiResponse } from 'next';
+import GoogleProvider from 'next-auth/providers/google';
+import { initializeApp } from '@firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+// import firebase from 'firebase/app';
 
-// import { app } from '../../../app/firebase.config';
-import * as firestoreFunctions from 'firebase/firestore';
+import 'firebase/auth';
+
+// const firebaseConfig = {
+//   apiKey: process.env.FIREBASE_API_KEY,
+//   authDomain: 'prompt-guessr.firebaseapp.com',
+//   projectId: 'prompt-guessr',
+//   storageBucket: 'prompt-guessr.appspot.com',
+//   messagingSenderId: process.env.FIREBASE_SENDER_ID,
+//   appId: process.env.FIREBASE_APP_ID,
+// };
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyAaJJ3sXKYTqHEPjnm6cjp-wKaCFa97ifI',
+  authDomain: 'prompt-guessr.firebaseapp.com',
+  projectId: 'prompt-guessr',
+  storageBucket: 'prompt-guessr.appspot.com',
+  messagingSenderId: '542920157952',
+  appId: '1:542920157952:web:d3936317001cb05f64e1e5',
+  measurementId: 'G-38XPQ1CGNV',
+};
+
+
+const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+if (!clientSecret) {
+  throw new Error('Google client secret not set');
+}
+
+const clientId = process.env.GOOGLE_CLIENT_ID;
+if (!clientId) {
+  throw new Error('Google client ID not set');
+}
+
 
 export const authOptions: NextAuthOptions = {
-  adapter: FirestoreAdapter({
-    // @ts-ignore
-    apiKey: process.env.FIREBASE_API_KEY,
-    appId: process.env.FIREBASE_APP_ID,
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  }),
-  pages: {
-    signIn: '/auth/signin',
-    // signOut: '/auth/signout',
-    // "are you sure you want to sign out?"
-    error: '/auth/error',
-    verifyRequest: '/auth/verify-request',
-    newUser: '/auth/new-user', // redirect to new user page for first time on user sign
-  },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientId,
+      clientSecret,
     }),
   ],
-  theme: {
-    colorScheme: 'light',
-  },
+  debug: true,
+
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       return true;
@@ -48,7 +63,15 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  adapter: FirestoreAdapter(firebaseConfig),
 };
 
-export default NextAuth(authOptions);
+export default (req: NextApiRequest, res: NextApiResponse<any>) =>
+  NextAuth(req, res, authOptions);
+
+  // Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+
+// to export authOptions, write this code
+// export default authOptions;
