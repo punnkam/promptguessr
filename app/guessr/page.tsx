@@ -47,6 +47,7 @@ const mono = JetBrains_Mono({
 export default function Home() {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showHint, setShowHint] = useState<boolean>(false);
+    const [loadingResult, setLoadingResult] = useState<boolean>(false);
     const [modalBody, setModalBody] = useState<string>('');
     const [modalTitle, setModalTitle] = useState<string>('');
     const [score, setScore] = useState(undefined);
@@ -67,6 +68,12 @@ export default function Home() {
         // add error handling
         if (inputValue === '') return;
         if (prompt === undefined) return;
+        toast({
+            title: 'Your guess is being processed',
+            description: 'Wait a few seconds to see your score',
+            className: 'bg-slate-500 text-white',
+        });
+        setLoadingResult(true);
         axios
             .post(`/api/getSim?pid=${prompt.pid}`, {
                 guess: inputValue,
@@ -78,24 +85,30 @@ export default function Home() {
             .then((res) => {
                 setResult(res.data);
                 setScore(res.data.similarity);
-                const won = res.data.similarity > 0.9;
+                const won = res.data.similarity >= 0.9;
                 const close = res.data.similarity > 0.8;
 
-                toast({
-                    title: won
-                        ? 'Your guess is correct!'
-                        : close
-                        ? 'Your guess is close!'
-                        : 'Your guess is incorrect',
-                    description: 'Check below to see your score',
-                    className: `${
-                        won
-                            ? 'bg-green-500'
-                            : close
-                            ? 'bg-amber-500'
-                            : 'bg-red-500'
-                    } text-white `,
-                });
+                if (won) {
+                    toast({
+                        title: 'Your guess is correct!',
+                        description: 'Check below to see your score',
+                        className: 'bg-green-500 text-white',
+                    });
+                } else if (close) {
+                    toast({
+                        title: 'Your guess is close!',
+                        description: 'Check below to see your score',
+                        className: 'bg-amber-500 text-white',
+                    });
+                } else {
+                    toast({
+                        title: 'Your guess is incorrect',
+                        description: 'Check below to see your score',
+                        className: 'bg-red-500 text-white',
+                    });
+                }
+
+                setLoadingResult(false);
             })
             .catch((err) => {
                 console.log(err.response.data);
@@ -157,19 +170,25 @@ export default function Home() {
                                 {result ? 'Your Guess' : 'Submit a Guess!'}
                             </h1>
                             <div className='relative w-full h-full bg-white border border-gray-200 rounded-lg shadow max-w-4/5 dark:bg-gray-800 dark:border-gray-700 '>
-                                <Image
-                                    src={
-                                        guessImg ||
-                                        'https://lexica-serve-encoded-images2.sharif.workers.dev/full_jpg/7ba81728-87c7-4858-9366-aeaa3058c475'
-                                    }
-                                    alt='Generated Image'
-                                    fill={true}
-                                    style={{
-                                        objectFit: 'cover',
-                                        borderRadius: '0.5rem',
-                                    }}
-                                    priority={true}
-                                />
+                                {!loadingResult ? (
+                                    <Image
+                                        src={
+                                            guessImg ||
+                                            'https://lexica-serve-encoded-images2.sharif.workers.dev/full_jpg/7ba81728-87c7-4858-9366-aeaa3058c475'
+                                        }
+                                        alt='Generated Image'
+                                        fill={true}
+                                        style={{
+                                            objectFit: 'cover',
+                                            borderRadius: '0.5rem',
+                                        }}
+                                        priority={true}
+                                    />
+                                ) : (
+                                    <div className='flex items-center justify-center h-full'>
+                                        <Spinner />
+                                    </div>
+                                )}
                             </div>
                             <div className='flex flex-row justify-center mt-5'></div>
                             <div className='flex flex-col justify-start gap-2 pb-2'>
@@ -339,6 +358,7 @@ export default function Home() {
                                         setScore(undefined);
                                         setGuessImg('');
                                         setShowHint(false);
+                                        setResult(undefined);
                                         getPrompt()
                                             .then((res) => {
                                                 setPrompt(res.data);
@@ -349,7 +369,10 @@ export default function Home() {
                                     }}
                                 >
                                     <p className='font-semibold text-white'>
-                                        Shuffle&nbsp;
+                                        {result && result.similarity >= 0.9
+                                            ? 'Next'
+                                            : 'Shuffle'}
+                                        &nbsp;
                                     </p>
                                     <svg
                                         xmlns='http://www.w3.org/2000/svg'
