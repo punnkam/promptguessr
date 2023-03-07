@@ -7,15 +7,7 @@ import { getDoc, getFirestore, doc } from 'firebase/firestore';
 
 import applyRateLimit from '../../utils/rateLimiter'; // https://kittygiraudel.com/2022/05/16/rate-limit-nextjs-api-routes/
 
-// Initialize Firebase and Firestore
-const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY,
-    authDomain: 'prompt-guessr.firebaseapp.com',
-    projectId: 'prompt-guessr',
-    storageBucket: 'prompt-guessr.appspot.com',
-    messagingSenderId: process.env.FIREBASE_SENDER_ID,
-    appId: process.env.FIREBASE_APP_ID,
-};
+import firebaseConfig from '../../firebase.config';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);

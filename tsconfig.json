@@ -31,6 +31,6 @@
     "**/**/*.tsx",
     ".next/types/**/*.ts",
     "utils/rateLimiter.ts"
-  ],
+, "firebase.config.js"  ],
   "exclude": ["node_modules"]
 }
