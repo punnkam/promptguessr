@@ -5,14 +5,7 @@ import type { Prompt, Error } from './types';
 import { initializeApp } from 'firebase/app';
 import { getDoc, getFirestore, doc } from 'firebase/firestore';
 
-const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY,
-    authDomain: 'prompt-guessr.firebaseapp.com',
-    projectId: 'prompt-guessr',
-    storageBucket: 'prompt-guessr.appspot.com',
-    messagingSenderId: process.env.FIREBASE_SENDER_ID,
-    appId: process.env.FIREBASE_APP_ID,
-};
+import firebaseConfig from '../../firebase.config';
 
 // Initialize Firebase and Firestore
 const app = initializeApp(firebaseConfig);
