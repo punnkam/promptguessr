@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/command';
 
 import { Button } from '@/components/ui/button';
+import { ShuffleIcon, ArrowRightIcon } from '@/components/ui/icons';
 import {
     HoverCard,
     HoverCardContent,
@@ -158,24 +159,21 @@ export default function Home() {
                 />
             )}
             <div
-                className={`${mono.className} flex flex-row h-screen w-screen bg-[#F7F7F7]`}
+                className={`${mono.className} flex flex-row h-screen w-screen bg-bg`}
             >
                 {/* column 1 */}
                 <div className='flex flex-col items-center justify-center w-1/2 '>
                     <div className='flex flex-col items-center justify-center w-3/4 gap-2 h-4/5'>
                         {/* User inputted image */}
 
-                        <Command className='z-10 flex justify-center w-full px-4 pt-2 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
+                        <Command className='z-10 flex justify-center w-full px-4 pt-2 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
                             <h1 className='flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
                                 {result ? 'Your Guess' : 'Submit a Guess!'}
                             </h1>
-                            <div className='relative w-full h-full bg-white border border-gray-200 rounded-lg shadow max-w-4/5 dark:bg-gray-800 dark:border-gray-700 '>
+                            <div className='relative w-full h-full border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 '>
                                 {!loadingResult ? (
                                     <Image
-                                        src={
-                                            guessImg ||
-                                            'https://lexica-serve-encoded-images2.sharif.workers.dev/full_jpg/7ba81728-87c7-4858-9366-aeaa3058c475'
-                                        }
+                                        src={guessImg || '/question_mark.png'}
                                         alt='Generated Image'
                                         fill={true}
                                         style={{
@@ -227,7 +225,7 @@ export default function Home() {
                             </div>
                         </Command>
                         {/* Typing prompt Dialog */}
-                        <Command className='z-10 justify-center w-full p-3 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3'>
+                        <Command className='z-10 justify-center w-full p-3 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 h-1/3'>
                             <div className=''>
                                 <CommandInput
                                     placeholder='Guess the prompt and press enter!'
@@ -323,13 +321,13 @@ export default function Home() {
                     </div>
                 </div>
                 {/* column 2 */}
-                <div className='flex flex-col items-center justify-center w-1/2 p-2'>
+                <div className='flex flex-col items-center justify-center w-1/2'>
                     <div className='w-3/4 h-4/5'>
-                        <Command className='z-10 flex justify-center w-full px-4 bg-white border rounded-lg shadow-md outline-none border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
-                            <h1 className='flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
+                        <Command className='z-10 flex justify-center w-full px-4 pb-4 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
+                            <h1 className='flex justify-center m-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
                                 Given Image
                             </h1>
-                            <div className='relative w-full bg-white border border-gray-200 rounded-lg shadow max-w-4/5 dark:bg-gray-800 dark:border-gray-700 h-4/5'>
+                            <div className='relative border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 h-4/5'>
                                 {/* <AspectRatio> */}
                                 {prompt ? (
                                     <Image
@@ -351,7 +349,7 @@ export default function Home() {
                             <div className='flex flex-row justify-center mt-5'>
                                 <Button
                                     variant='default'
-                                    className='text-white bg-sky-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm px-2.5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex 	'
+                                    className='text-white bg-sky-500 hover:bg-blue-800 focus:outline-none font-medium rounded-md text-sm pr-3 pl-4 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 flex 	'
                                     onClick={() => {
                                         setPrompt(undefined);
                                         setInputValue('');
@@ -368,44 +366,17 @@ export default function Home() {
                                             });
                                     }}
                                 >
-                                    <p className='font-semibold text-white'>
+                                    <p className='font-semibold text-white '>
                                         {result && result.similarity >= 0.9
                                             ? 'Next'
                                             : 'Shuffle'}
                                         &nbsp;
                                     </p>
-                                    <svg
-                                        xmlns='http://www.w3.org/2000/svg'
-                                        width='15'
-                                        height='15'
-                                        viewBox='0 0 24 24'
-                                        fill='none'
-                                        stroke='currentColor'
-                                        strokeWidth='2'
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                    >
-                                        <polyline points='16 3 21 3 21 8'></polyline>
-                                        <line
-                                            x1='4'
-                                            y1='20'
-                                            x2='21'
-                                            y2='3'
-                                        ></line>
-                                        <polyline points='21 16 21 21 16 21'></polyline>
-                                        <line
-                                            x1='15'
-                                            y1='15'
-                                            x2='21'
-                                            y2='21'
-                                        ></line>
-                                        <line
-                                            x1='4'
-                                            y1='4'
-                                            x2='9'
-                                            y2='9'
-                                        ></line>
-                                    </svg>
+                                    {result && result.similarity >= 0.9 ? (
+                                        <ArrowRightIcon />
+                                    ) : (
+                                        <ShuffleIcon />
+                                    )}
                                 </Button>
                             </div>
                         </Command>
