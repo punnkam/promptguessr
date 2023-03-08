@@ -43,13 +43,7 @@ scraping/data/
 
 #config
 firebase.config.json
-prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json 
 /prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json
+# to ignore a file at the root of the project
+# /firebase.config.json
 
-#this is the only file that should be commited
-# to ignore /Users/alexanderphan_1/Developer/promptguessr/prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json, use:
-#   /prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json
-# instead of:
-#   prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json
-# the difference is that the former will ignore the file in all directories, whereas the latter will just ignore it in the current directory.
-# !/prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json would also work, but is a bit confusing, since it would ignore the file in all directories except the current one.
