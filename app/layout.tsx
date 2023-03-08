@@ -3,13 +3,17 @@ import { Session } from 'next-auth';
 import { headers } from 'next/headers';
 import AuthContext from './AuthContext';
 import axios from 'axios';
+import { Toaster } from '@/components/ui/toaster';
 
 async function getSession(cookie: string): Promise<Session | null> {
-    const response = await axios.get<Session>(`/api/auth/session`, {
-        headers: {
-            cookie,
-        },
-    });
+    const response = await axios.get<Session>(
+        `${process.env.NEXTAUTH_URL}/api/auth/session`,
+        {
+            headers: {
+                cookie,
+            },
+        }
+    );
     // convert the response to a Session object
     const session = response.data;
 
@@ -30,6 +34,7 @@ export default async function RootLayout({
       */}
             <head />
             <body>
+                <Toaster />
                 <AuthContext session={session}>{children}</AuthContext>
             </body>
         </html>
