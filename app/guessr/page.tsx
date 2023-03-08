@@ -253,11 +253,11 @@ export default function Home() {
                                             </p>
                                             {score < 0.9 ? (
                                                 <div className='inline-flex items-center px-2 py-1 mr-2 text-sm font-medium text-indigo-800 bg-indigo-100 rounded dark:bg-indigo-900 dark:text-indigo-300'>
-                                                    {score}
+                                                    {score * 100}%
                                                 </div>
                                             ) : (
                                                 <div className='inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-green-100 rounded green-indigo-800 dark:bg-green-900 dark:green-indigo-300'>
-                                                    {score}
+                                                    {score * 100}%
                                                 </div>
                                             )}
                                         </div>
