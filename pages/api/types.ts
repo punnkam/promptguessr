@@ -21,4 +21,12 @@ export type User = {
     name: string;
     email: string;
     solved: Prompt[];
+    totalScore: number;
+};
+
+export type Leaderboard = {
+    timeStart: string;
+    timeEnd: string;
+    order: string;
+    userList: User[];
 };
