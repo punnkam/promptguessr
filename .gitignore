@@ -37,7 +37,9 @@ yarn-error.log*
 next-env.d.ts
 
 #scraping
-
 scraping/venv/
 scraping/geckodriver.log
 scraping/data/
+
+#config
+firebase.config.json

@@ -6,15 +6,15 @@ import { initializeApp } from 'firebase/app';
 import { getDoc, getFirestore, doc } from 'firebase/firestore';
 
 import firebaseConfig from '../../firebase.config';
-
+import { app, db } from '../../firebase.config';
 // Initialize Firebase and Firestore
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// const app = initializeApp(firebaseConfig);
+// const db = getFirestore(app);
 
 // Get a random prompt from the firebase store
 export default async function handler(
-    req: NextApiRequest,
-    res: NextApiResponse<Prompt | Error>
+  req: NextApiRequest,
+  res: NextApiResponse<Prompt | Error>
 ) {
-    return;
+  return;
 }

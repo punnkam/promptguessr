@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@firebase/app-types": "^0.8.1",
+    "@next-auth/firebase-adapter": "^2.0.1",
     "@next/font": "13.1.6",
     "@radix-ui/react-alert-dialog": "^1.0.2",
     "@radix-ui/react-aspect-ratio": "^1.0.1",
@@ -32,7 +33,7 @@
     "eslint-config-next": "13.1.6",
     "express-rate-limit": "^6.7.0",
     "express-slow-down": "^1.5.0",
-    "firebase": "^9.17.1",
+    "firebase": "^9.17.2",
     "lexica-api": "^1.0.2",
     "lucide": "^0.115.0",
     "lucide-react": "^0.115.0",

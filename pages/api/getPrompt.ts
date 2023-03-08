@@ -8,10 +8,11 @@ import { getDoc, getFirestore, doc } from 'firebase/firestore';
 import applyRateLimit from '../../utils/rateLimiter'; // https://kittygiraudel.com/2022/05/16/rate-limit-nextjs-api-routes/
 
 import firebaseConfig from '../../firebase.config';
+import { app, db } from '../../firebase.config';
 
 // Initialize Firebase and Firestore
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// const app = initializeApp(firebaseConfig);
+// const db = getFirestore(app);
 
 // Get a random prompt from the firebase store
 export default async function handler(

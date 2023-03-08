@@ -17,6 +17,8 @@
 //   messagingSenderId: process.env.FIREBASE_SENDER_ID,
 //   appId: process.env.FIREBASE_APP_ID,
 // };
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -25,6 +27,11 @@ const firebaseConfig = {
   storageBucket: 'prompt-guessr.appspot.com',
   messagingSenderId: process.env.FIREBASE_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID,
+
 };
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 export default firebaseConfig;
+export { db, app };
