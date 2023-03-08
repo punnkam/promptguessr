@@ -3,7 +3,6 @@ import { Session } from 'next-auth';
 import { headers } from 'next/headers';
 import AuthContext from './AuthContext';
 import axios from 'axios';
-import { Toaster } from '@/components/ui/toaster';
 
 async function getSession(cookie: string): Promise<Session | null> {
     const response = await axios.get<Session>(
@@ -20,13 +19,12 @@ async function getSession(cookie: string): Promise<Session | null> {
     return Object.keys(session).length > 0 ? session : null;
 }
 
-// This is where you can add components and providers that will be around your entire app.
 export default async function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    // const session = await getSession(headers().get('cookie') ?? '');
+    const session = await getSession(headers().get('cookie') ?? '');
     return (
         <html lang='en'>
             {/*
@@ -35,8 +33,7 @@ export default async function RootLayout({
       */}
             <head />
             <body>
-                <Toaster />
-                {/* <AuthContext session={session}>{children}</AuthContext> */}
+                <AuthContext session={session}>{children}</AuthContext>
             </body>
         </html>
     );
