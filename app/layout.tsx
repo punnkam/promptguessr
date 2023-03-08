@@ -5,14 +5,11 @@ import AuthContext from './AuthContext';
 import axios from 'axios';
 
 async function getSession(cookie: string): Promise<Session | null> {
-    const response = await axios.get<Session>(
-        `http://127.0.0.1:3000/api/auth/session`,
-        {
-            headers: {
-                cookie,
-            },
-        }
-    );
+    const response = await axios.get<Session>(`/api/auth/session`, {
+        headers: {
+            cookie,
+        },
+    });
     // convert the response to a Session object
     const session = response.data;
 
