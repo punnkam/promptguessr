@@ -43,4 +43,4 @@ scraping/data/
 
 #config
 firebase.config.json
-prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1
+!/prompt-guessr-firebase-adminsdk-6dg4j-015e7127e1.json
