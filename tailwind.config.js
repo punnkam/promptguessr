@@ -43,6 +43,8 @@ module.exports = {
       },
       colors: {
         bg: '#F7F7F7',
+        theme: '#0ea5e9',
+        nearWhite: '#fefefe'
       },
       aspectRatio: {
         '2/3': '2/3',

@@ -32,3 +32,10 @@ export type NoUserFound = {
     user: null;
   name: string;
 };
+
+export type Leaderboard = {
+  timeStart: string;
+  timeEnd: string;
+  order: string;
+  userList: User[];
+};
