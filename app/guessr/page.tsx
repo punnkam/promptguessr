@@ -37,7 +37,7 @@ import {
     HoverCardTrigger,
 } from '@/components/ui/hovercard';
 import { useToast } from '@/hooks/ui/usetoast';
-import { Toast } from '@/components/ui/toast';
+import { useSession } from 'next-auth/react';
 
 const mono = JetBrains_Mono({
     subsets: ['latin'],
@@ -59,6 +59,9 @@ export default function Home() {
     const [guessImg, setGuessImg] = useState<string>('');
     const [shortcutPressed, setShortcutPressed] = useState<boolean>(false);
     const { toast } = useToast();
+    const { data: session, status } = useSession();
+
+    const [sawAnswer, setSawAnswer] = useState<boolean>(false);
 
     const getPrompt = async () => {
         const prompt = await axios.get('/api/getPrompt');
@@ -78,6 +81,8 @@ export default function Home() {
         axios
             .post(`/api/getSim?pid=${prompt.pid}`, {
                 guess: inputValue,
+                user: status == 'authenticated' ? session?.user : undefined,
+                sawAnswer: sawAnswer,
                 headers: {
                     'Content-Type': 'application/json',
                     // 'Authorization': `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
@@ -133,6 +138,7 @@ export default function Home() {
         setModalBody(result?.prompt ?? '');
         setModalTitle('Answer');
         setShowModal(bool);
+        setSawAnswer(true);
     };
 
     useEffect(() => {
@@ -357,6 +363,7 @@ export default function Home() {
                                         setGuessImg('');
                                         setShowHint(false);
                                         setResult(undefined);
+                                        setSawAnswer(false);
                                         getPrompt()
                                             .then((res) => {
                                                 setPrompt(res.data);

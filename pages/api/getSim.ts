@@ -4,6 +4,7 @@ import type { SubmitResponse, Error } from './types';
 import { Configuration, OpenAIApi } from 'openai';
 import { initializeApp } from 'firebase/app';
 import { getDoc, getFirestore, doc } from 'firebase/firestore';
+import { addScore } from './addScore';
 
 import applyRateLimit from '../../utils/rateLimiter'; // https://kittygiraudel.com/2022/05/16/rate-limit-nextjs-api-routes/
 
@@ -34,7 +35,7 @@ export default async function handler(
     // TODO: possible store existing embeddings in firebase
     try {
         const { pid } = req.query;
-        const { guess } = req.body;
+        const { guess, user, sawAnswer } = req.body;
 
         if (!pid) {
             res.status(400).json({ message: 'No prompt id provided' });
@@ -76,12 +77,22 @@ export default async function handler(
                 promptVector
             );
 
-            // If similarity is greater than 0.9, update the leaderboard
+            // If similarity is greater than or equal to 0.9, update the leaderboard
+            if (user && similarity >= 0.9 && !sawAnswer) {
+                console.log('Updating leaderboard...');
+                console.log(user.email, Math.round(similarity * 100));
+                addScore(
+                    user.email,
+                    Math.round(similarity * 100),
+                    pid as string
+                );
+            }
+
             res.send({
                 pid: pid as string,
                 prompt: prompt.data().prompt,
                 similarity: Math.round(similarity * 100) / 100,
-                won: similarity > 0.9,
+                won: similarity >= 0.9,
             });
         } else {
             res.status(404).json({ message: `Prompt ${pid} not found` });

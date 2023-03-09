@@ -32,7 +32,6 @@ import { Button } from '@/components/ui/button';
 
 const Login = () => {
     const { data: session, status } = useSession();
-    console.log(session);
     if (session && status === 'authenticated') {
         return (
             <DropdownMenu>

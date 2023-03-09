@@ -1,41 +1,38 @@
 export type Prompt = {
-  pid: string;
-  image: string;
-  length: number;
-  hint_words: string[];
+    pid: string;
+    image: string;
+    length: number;
+    hint_words: string[];
 };
 
 export type SubmitResponse = {
-  pid: string;
-  prompt?: string;
-  similarity: number;
-  won: boolean;
+    pid: string;
+    prompt?: string;
+    similarity: number;
+    won: boolean;
 };
 
 export type Error = {
-  message: string;
+    message: string;
 };
 
 export type User = {
-  uid: string;
-  name: string;
-  email: string;
-  solved: Prompt[];
-  totalScore: number;
-  message: string;
+    name: string;
+    image?: string;
+    email: string;
+    solved: string[];
+    totalScore: number;
 };
 
 // type that returns no user found
 export type NoUserFound = {
-  success: boolean;
-  message: string;
+    success: boolean;
+    message: string;
     user: null;
-  name: string;
+    name: string;
 };
 
 export type Leaderboard = {
-  timeStart: string;
-  timeEnd: string;
-  order: string;
-  userList: User[];
+    timestamp: number;
+    userList: User[];
 };
