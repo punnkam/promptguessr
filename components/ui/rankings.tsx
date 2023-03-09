@@ -41,6 +41,9 @@ export default function Rankings({ leaderboard }: any) {
                                         </div>
                                         <div className='flex-1 min-w-0'>
                                             <p className='font-medium text-gray-900 truncate text-md dark:text-white'>
+                                                <span className='font-semibold'>
+                                                    {index + 1}.{' '}
+                                                </span>
                                                 {user.name.split(' ')[0]}
                                             </p>
                                             <p className='text-gray-500 truncate text-md dark:text-gray-400'>

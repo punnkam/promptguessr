@@ -133,6 +133,21 @@ export default function Home() {
             });
     };
 
+    const getUserStats = () => {
+        if (status !== 'authenticated') return;
+        const user: any = session?.user;
+        axios
+            .get(`/api/getUserStats?email=${user.email}`)
+            .then((res) => {
+                console.log(res.data);
+                // TODO: add user stats to page
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }; // { rank: number, score: string, solved: string[] }
+
+    getUserStats();
     const showAnswer = (bool: boolean) => {
         if (result === undefined) return;
         setModalBody(result?.prompt ?? '');
@@ -145,7 +160,6 @@ export default function Home() {
         getPrompt()
             .then((res) => {
                 setPrompt(res.data);
-                console.log('current prompt', res.data);
             })
             .catch((err) => {
                 console.log(err);

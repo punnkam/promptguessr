@@ -36,3 +36,9 @@ export type Leaderboard = {
     timestamp: number;
     userList: User[];
 };
+
+export type UserStats = {
+    rank: number;
+    score: number;
+    solved: string[];
+};

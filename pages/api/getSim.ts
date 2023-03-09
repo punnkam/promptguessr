@@ -80,7 +80,6 @@ export default async function handler(
             // If similarity is greater than or equal to 0.9, update the leaderboard
             if (user && similarity >= 0.9 && !sawAnswer) {
                 console.log('Updating leaderboard...');
-                console.log(user.email, Math.round(similarity * 100));
                 addScore(
                     user.email,
                     Math.round(similarity * 100),
