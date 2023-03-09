@@ -188,7 +188,9 @@ export default function Home() {
 
                         <Command className='z-10 flex justify-center w-full px-4 pt-2 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
                             <h1 className='flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
-                                {result ? 'Your Guess' : 'Submit a Guess!'}
+                                {result
+                                    ? 'Your Guess'
+                                    : 'Your Guess Appears Here!'}
                             </h1>
                             <div className='relative w-full h-full border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 '>
                                 {!loadingResult ? (
@@ -312,7 +314,7 @@ export default function Home() {
                                                 <HoverCardContent>
                                                     <text className='font-semibold text-black'>
                                                         {result
-                                                            ? 'Click on this to reveal the answer to the prompt'
+                                                            ? "Click on this to reveal the answer to the prompt (you won't get points)"
                                                             : 'Submit a guess'}
                                                     </text>
                                                 </HoverCardContent>
