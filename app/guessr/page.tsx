@@ -386,3 +386,5 @@ export default function Home() {
     </main>
   );
 }
+
+// todo: add user stats to page, fix responsive design (particularly modbile), style image to have image blur bg
