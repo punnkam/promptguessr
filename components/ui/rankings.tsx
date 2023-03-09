@@ -9,9 +9,8 @@ interface User {
 }
 
 export default function Rankings({ leaderboard }: any) {
-    console.log(leaderboard.userList);
     return (
-        <div className='w-4/5 mx-5 my-auto mt-8 bg-white border border-gray-200 rounded-lg shadow md:mx-auto lg:mx-auto sm:p-8 dark:bg-gray-800 dark:border-gray-700'>
+        <div className='w-4/5 p-2 pr-4 mx-auto my-auto mt-8 bg-white border border-gray-200 rounded-lg shadowmd:mx-auto lg:mx-auto sm:p-8 dark:bg-gray-800 dark:border-gray-700'>
             <div className='flex items-center justify-between p-5 mb-4'>
                 <h5 className='text-xl font-bold leading-none text-gray-900 dark:text-white'>
                     Top Ranks
@@ -28,8 +27,7 @@ export default function Rankings({ leaderboard }: any) {
                     role='list'
                     className='divide-y divide-gray-200 dark:divide-gray-700'
                 >
-                    {leaderboard &&
-                        leaderboard.userList &&
+                    {leaderboard.userList &&
                         leaderboard.userList.map(
                             (user: User, index: number) => (
                                 <li className='py-3 sm:py-4' key={index}>
