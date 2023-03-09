@@ -179,11 +179,11 @@ export default function Home() {
         />
       )}
       <div
-        className={`${mono.className} flex flex-row h-screen w-screen bg-bg gap-5`}
+        className={`${mono.className} flex flex-row h-screen w-screen bg-bg gap-3`}
       >
         {/* column 1 */}
         <div className="flex flex-col justify-center w-1/2 place-items-end">
-          <div className="flex flex-col items-center justify-center w-3/4 gap-5 h-4/5">
+          <div className="flex flex-col items-center justify-center w-3/4 gap-3 h-4/5">
             {/* User inputted image */}
 
             <Command className="z-10 flex justify-center w-full px-4 pt-2 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800">
@@ -209,8 +209,8 @@ export default function Home() {
                 )}
               </div>
               <div className="flex flex-row justify-center mt-5"></div>
-              <div className="flex flex-col justify-start gap-5 pb-2">
-                <div className="flex flex-col gap-5 mx-2 my-2">
+              <div className="flex flex-col justify-start pb-2 3">
+                <div className="flex flex-col gap-3 mx-2 my-2">
                   <span>
                     Hint:{' '}
                     {prompt &&
@@ -271,7 +271,7 @@ export default function Home() {
                   )}
                   {/* <CommandSeparator /> */}
                 </CommandList>
-                <div className="flex flex-row justify-center gap-5 mx-5 mt-5">
+                <div className="flex flex-row justify-center gap-3 mx-5 mt-5">
                   <HoverCard>
                     <HoverCardTrigger>
                       <Button
