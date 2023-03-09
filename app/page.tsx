@@ -36,18 +36,18 @@ export default function Home() {
             <div className='pt-24 pb-12 mx-auto sm:pt-24'>
                 <div className='max-w-xl'>
                     <p
-                        className={`font-bold  text-sky-500 text-xl lg:mx-0 md:mx-0 mx-auto text-center`}
+                        className={`font-bold  text-sky-500 text-2xl lg:mx-0 md:mx-0 mx-auto text-center`}
                     >
                         Achieve the AI skill you need
                     </p>
                     <h2
-                        className={` mt-3 text-2xl font-black	 tracking-wide text-black sm:text-4xl md:text-4xl lg:text-6xl lg:mx-0 md:mx-0 mx-5 text-center animate-bounce`}
+                        className={` mt-3 text-3xl font-black	 tracking-wide text-black sm:text-4xl md:text-4xl lg:text-6xl lg:mx-0 md:mx-0 mx-5 text-center animate-bounce`}
                     >
                         Prompt Guessr{' '}
                     </h2>
-                    <p className='mx-10 mt-3 text-center text-md text-slate-600 lg:mx-0 md:mx-0'>
-                        Prompt Guessr is a tool that allows you to practice
-                        prompt engineering by guessing prompts from given images
+                    <p className='mx-10 mt-3 text-lg text-center text-slate-600 lg:mx-0 md:mx-0'>
+                        Prompt Guessr lets you practice prompt engineering by
+                        guessing prompts from given images
                     </p>
                 </div>
                 <div className={mono.className}>
