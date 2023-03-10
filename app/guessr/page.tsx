@@ -179,18 +179,16 @@ export default function Home() {
                 />
             )}
             <div
-                className={`${mono.className} flex flex-row h-screen w-screen bg-bg`}
+                className={`${mono.className} flex flex-row h-screen w-screen bg-bg gap-3`}
             >
                 {/* column 1 */}
-                <div className='flex flex-col items-center justify-center w-1/2 '>
-                    <div className='flex flex-col items-center justify-center w-3/4 gap-2 h-4/5'>
+                <div className='flex flex-col justify-center w-1/2 place-items-end'>
+                    <div className='flex flex-col items-center justify-center w-3/4 gap-3 h-4/5'>
                         {/* User inputted image */}
 
                         <Command className='z-10 flex justify-center w-full px-4 pt-2 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
                             <h1 className='flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
-                                {result
-                                    ? 'Your Guess'
-                                    : 'Your Guess Appears Here!'}
+                                {result ? 'Your Guess' : 'Submit a Guess!'}
                             </h1>
                             <div className='relative w-full h-full border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 '>
                                 {!loadingResult ? (
@@ -211,8 +209,8 @@ export default function Home() {
                                 )}
                             </div>
                             <div className='flex flex-row justify-center mt-5'></div>
-                            <div className='flex flex-col justify-start gap-2 pb-2'>
-                                <div className='flex flex-col gap-2 mx-2 my-2'>
+                            <div className='flex flex-col justify-start pb-2 3'>
+                                <div className='flex flex-col gap-3 mx-2 my-2'>
                                     <span>
                                         Hint:{' '}
                                         {prompt &&
@@ -221,11 +219,11 @@ export default function Home() {
                                                     return (
                                                         <div
                                                             key={index}
-                                                            className={`blur-${
+                                                            className={`inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-gray-100 rounded green-gray-800 dark:bg-gray-900 dark:green-gray-300 ${
                                                                 showHint
-                                                                    ? 'none'
-                                                                    : 'sm'
-                                                            } inline-flex items-center px-2 py-1 mr-2 text-sm font-medium bg-gray-100 rounded  green-gray-800 dark:bg-gray-900 dark:green-gray-300`}
+                                                                    ? 'blur-none'
+                                                                    : 'blur-sm'
+                                                            }`}
                                                         >
                                                             {word}
                                                         </div>
@@ -286,7 +284,7 @@ export default function Home() {
                                     )}
                                     {/* <CommandSeparator /> */}
                                 </CommandList>
-                                <div className='flex flex-row justify-center gap-2 mx-5 mt-5'>
+                                <div className='flex flex-row justify-center gap-3 mx-5 mt-5'>
                                     <HoverCard>
                                         <HoverCardTrigger>
                                             <Button
@@ -314,7 +312,7 @@ export default function Home() {
                                                 <HoverCardContent>
                                                     <text className='font-semibold text-black'>
                                                         {result
-                                                            ? "Click on this to reveal the answer to the prompt (you won't get points)"
+                                                            ? 'Click on this to reveal the answer to the prompt'
                                                             : 'Submit a guess'}
                                                     </text>
                                                 </HoverCardContent>
@@ -343,10 +341,10 @@ export default function Home() {
                     </div>
                 </div>
                 {/* column 2 */}
-                <div className='flex flex-col items-center justify-center w-1/2'>
+                <div className='flex flex-col justify-center w-1/2 place-items-start'>
                     <div className='w-3/4 h-4/5'>
-                        <Command className='z-10 flex justify-center w-full px-4 pb-4 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800'>
-                            <h1 className='flex justify-center m-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
+                        <Command className='z-10 flex justify-center w-full px-4 pb-4 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 '>
+                            <h1 className='flex justify-center text-2xl font-semibold text-gray-700 dark:text-gray-200 '>
                                 Given Image
                             </h1>
                             <div className='relative border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 h-4/5'>
@@ -409,3 +407,5 @@ export default function Home() {
         </main>
     );
 }
+
+// todo: add user stats to page, fix responsive design (particularly modbile), style image to have image blur bg
