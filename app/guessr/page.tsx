@@ -5,6 +5,7 @@ import { JetBrains_Mono } from '@next/font/google';
 import styles from './page.module.css';
 import Rankings from '@/components/ui/rankings';
 import Link from 'next/link';
+
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import type { Prompt, SubmitResponse } from '../../pages/api/types';
@@ -170,6 +171,18 @@ export default function Home() {
         <main className={`${mono.className} bg-[#F7F7F7]`}>
             <div className='absolute top-0 right-0 m-4'>
                 <Login />
+            </div>
+            <div className='absolute top-0 left-0 m-4'>
+                <Button className='bg-sky-500'>
+                    <Link href='/'>
+                        <Image
+                            src='/favicon.ico'
+                            alt='logo'
+                            width='15'
+                            height='15'
+                        />
+                    </Link>
+                </Button>
             </div>
             {showModal && (
                 <Modal
