@@ -408,4 +408,4 @@ export default function Home() {
     );
 }
 
-// todo: add user stats to page, fix responsive design (particularly modbile), style image to have image blur bg
+// todo: add user stats to page, fix responsive design (particularly modbile), style image to have image blur bg, show added points on correct guess
