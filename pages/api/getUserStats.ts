@@ -45,7 +45,10 @@ export default async function handler(
         const userIndex = sortedUsers.findIndex((u: any) => u.email === email);
         const userRank: number = userIndex + 1;
         const userScore: number = sortedUsers[userIndex].score || 0;
-        const userSolved: string[] = sortedUsers[userIndex].played || [];
+        // this is an array of prompt ids
+        // const userSolved: string[] = sortedUsers[userIndex].played?.length || [];
+        // to make it the number of prompts solved, use userSolved.length
+        const userSolved: number = sortedUsers[userIndex].played?.length || 0;
 
         const userStats: UserStats = {
             rank: userRank,

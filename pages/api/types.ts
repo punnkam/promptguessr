@@ -40,5 +40,5 @@ export type Leaderboard = {
 export type UserStats = {
     rank: number;
     score: number;
-    solved: string[];
+    solved: number;
 };
