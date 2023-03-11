@@ -98,7 +98,7 @@ export default function Home() {
 
         if (won) {
           toast({
-            title: 'Your guess is correct! Added points to your score.',
+            title: 'Your guess is correct! Points added to your score.',
             description: 'Check below to see your similarity score',
             className: 'bg-green-500 text-white',
           });
