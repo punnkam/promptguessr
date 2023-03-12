@@ -22,7 +22,7 @@ export default function Rankings({ leaderboard }: any) {
                     {/* View all */}
                 </a>
             </div>
-            <div className='flow-root'>
+            <div className='overflow-scroll max-h-72'>
                 <ul
                     role='list'
                     className='divide-y divide-gray-200 dark:divide-gray-700'
