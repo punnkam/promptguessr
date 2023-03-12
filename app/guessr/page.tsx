@@ -170,7 +170,7 @@ export default function Home() {
 
   return (
     <main className={`${mono.className} bg-[#F7F7F7]`}>
-      <div className="absolute top-0 right-0 flex-col gap-3 m-4 md:flex-row justify-items-end">
+      <div className="absolute top-0 right-0 flex-col gap-3 m-4 md:flex-row justify-items-end ">
         <LoginMenu />
       </div>
       <div className="absolute top-0 left-0 m-4">
@@ -188,13 +188,12 @@ export default function Home() {
         />
       )}
       <div
-        className={`${mono.className} flex flex-row h-screen w-screen bg-bg gap-3`}
+        className={`${mono.className} flex flex-col-reverse h-screen w-screen bg-bg gap-3 pt-20 md:pt-0 md:flex-row`}
       >
         {/* column 1 */}
-        <div className="flex flex-col justify-center w-1/2 place-items-end">
+        <div className="flex flex-col w-full h-full md:justify-center md:w-1/2 md:place-items-end place-items-center">
           <div className="flex flex-col items-center justify-center w-3/4 gap-3 h-4/5">
             {/* User inputted image */}
-
             <Command className="z-10 flex justify-center w-full px-4 pt-2 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800">
               <h1 className="flex justify-center p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
                 {result ? 'Your Guess' : 'Submit a Guess!'}
@@ -331,24 +330,39 @@ export default function Home() {
           </div>
         </div>
         {/* column 2 */}
-        <div className="flex flex-col justify-center w-1/2 place-items-start">
-          <div className="w-3/4 h-4/5">
+        <div className="flex flex-col justify-center w-full h-full md:w-1/2 md:place-items-start place-items-center">
+          <div className="flex flex-col items-center justify-center w-3/4 gap-3 h-4/5">
             <Command className="z-10 flex justify-center w-full px-4 pb-4 border rounded-lg shadow-md outline-none bg-nearWhite border-slate-100 animate-in zoom-in-90 dark:border-slate-800 dark:bg-slate-800 ">
-              <h1 className="flex justify-center text-2xl font-semibold text-gray-700 dark:text-gray-200 ">
+              <h1 className="flex justify-center mb-3 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Given Image
               </h1>
               <div className="relative border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 h-4/5">
-                {/* <AspectRatio> */}
+                <div className="absolute inset-0 z-0 filter blur-sm">
+                  {prompt ? (
+                    <Image
+                      src={prompt ? prompt.image : ''}
+                      alt="Prompt to guess :)"
+                      fill={true}
+                      style={{
+                        objectFit: 'cover',
+                      }}
+                      priority={true}
+                    />
+                  ) : null}
+                </div>
                 {prompt ? (
-                  <Image
-                    src={prompt ? prompt.image : ''}
-                    alt="Prompt to guess :)"
-                    fill={true}
-                    style={{
-                      objectFit: 'contain',
-                    }}
-                    priority={true}
-                  />
+                  <div className="border border-gray-300 rounded-full">
+                    <Image
+                      src={prompt ? prompt.image : ''}
+                      alt="Prompt to guess :)"
+                      fill={true}
+                      style={{
+                        objectFit: 'contain',
+                      }}
+                      className="rounded-lg min-w-fit "
+                      priority={true}
+                    />
+                  </div>
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <Spinner />
@@ -396,4 +410,4 @@ export default function Home() {
   );
 }
 
-// todo: fix responsive design (particularly modbile), style image to have image blur bg, show added points on correct guess (points added!)
+// todo: fix responsive design (particularly modbile)
