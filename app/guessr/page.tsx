@@ -203,7 +203,7 @@ export default function Home() {
                             <h1 className='justify-center hidden p-2 text-2xl font-semibold text-gray-700 dark:text-gray-200 sm:flex'>
                                 {result ? 'Your Guess' : 'Submit a Guess!'}
                             </h1>
-                            <div className='relative hidden w-full h-full my-2 border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 sm:flex'>
+                            <div className='relative hidden w-full h-full my-2 border border-gray-200 rounded-lg shadow bg-nearWhite max-w-4/5 dark:bg-gray-800 dark:border-gray-700 sm:flex sm:justify-center'>
                                 {!loadingResult ? (
                                     <Image
                                         src={guessImg || '/question_mark.png'}
