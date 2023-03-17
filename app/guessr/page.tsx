@@ -59,6 +59,7 @@ export default function Home() {
     const [result, setResult] = useState<SubmitResponse | undefined>(undefined);
     const [search, setSearch] = useState<LexicaImage[]>([]);
     const [guessImg, setGuessImg] = useState<string>('');
+    const [update, setUpdate] = useState<boolean>(false);
     const [shortcutPressed, setShortcutPressed] = useState<boolean>(false);
     const { toast } = useToast();
     const { data: session, status } = useSession();
@@ -102,6 +103,7 @@ export default function Home() {
                         description: 'Check below to see your similarity score',
                         className: 'bg-green-500 text-white',
                     });
+                    setUpdate(!update);
                 } else if (close) {
                     toast({
                         title: 'Your guess is close!',
@@ -171,7 +173,7 @@ export default function Home() {
     return (
         <main className={`${mono.className} bg-[#F7F7F7]`}>
             <div className='absolute top-0 right-0 flex-col gap-3 m-4 md:flex-row justify-items-end '>
-                <LoginMenu />
+                <LoginMenu update={update} />
             </div>
             <div className='absolute top-0 left-0 m-4'>
                 <Button className='bg-sky-500'>

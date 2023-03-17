@@ -5,9 +5,6 @@ import { useEffect, useState } from 'react';
 
 const UserStats = () => {
     const { data: session, status } = useSession();
-    const [rank, setRank] = useState<number>();
-    const [score, setScore] = useState<string>();
-    const [solved, setSolved] = useState<number>();
     const [stats, setStats] = useState<any>({});
 
     useEffect(() => {
