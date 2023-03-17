@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
-const UserStats = () => {
+const UserStats = ({ update }: any) => {
     const { data: session, status } = useSession();
     const [stats, setStats] = useState<any>({});
 
@@ -23,7 +23,7 @@ const UserStats = () => {
             .catch((err) => {
                 console.log(err);
             });
-    }, [session, status, stats]);
+    }, [session, status, stats, update]);
 
     return (
         <div>
